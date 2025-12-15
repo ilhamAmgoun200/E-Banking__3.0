@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureBank - Transaction History</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏦</text></svg>" />
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">🏦 SecureBank</div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="/accounts">Accounts</a></li>
+                    <li><a href="/transactions" style="color: #667eea;">Transactions</a></li>
+                    <li>
+                        <form th:action="@{/logout}" method="get" style="display: inline;">
+                            <button type="submit" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                                Sign Out
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Page Header -->
+        <div class="card">
+            <h1 style="margin-bottom: 0.5rem;">📊 Transaction History</h1>
+            <p style="text-align: center; color: #666; font-size: 1.1rem;">
+                Complete record of your account activities
+            </p>
+        </div>
+
+        <!-- Error Message -->
+        <div th:if="${error}" class="card" style="background: #ffebee; border: 1px solid #f44336; color: #c62828;">
+            <h3 style="margin-bottom: 0.5rem; color: #c62828;">⚠️ Error</h3>
+            <p th:text="${error}" style="margin: 0;">Error message</p>
+        </div>
+
+        <!-- Filter Section -->
+        <div class="card">
+            <h3 style="margin-bottom: 1rem;">🔍 Filter Transactions</h3>
+            <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 200px;">
+                    <label for="accountFilter" style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #333;">
+                        Filter by Account:
+                    </label>
+                    <select id="accountFilter" onchange="filterTransactions()" 
+                            style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; background: white;">
+                        <option value="">All My Accounts</option>
+                        <!-- This will be populated by JavaScript if needed, or we can use server-side -->
+                    </select>
+                </div>
+                
+                <div style="align-self: flex-end;">
+                    <button onclick="refreshTransactions()" class="btn btn-primary" 
+                            style="padding: 0.75rem 1.5rem; white-space: nowrap;">
+                        🔄 Refresh
+                    </button>
+                </div>
+            </div>
+            
+            <div th:if="${selectedAccountNumber}" style="margin-top: 1rem; padding: 0.75rem; background: #e3f2fd; border-radius: 8px; color: #1976d2;">
+                <strong>📌 Filtered by Account:</strong> <span th:text="${selectedAccountNumber}"></span>
+                <a href="/transactions" style="margin-left: 1rem; color: #1976d2; text-decoration: underline;">
+                    View All Transactions
+                </a>
+            </div>
+        </div>
+
+        <!-- Transaction Statistics -->
+        <div class="card" th:if="${!#lists.isEmpty(transactions)}">
+            <h3 style="margin-bottom: 1.5rem;">📈 Transaction Summary</h3>
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-value" th:text="${#lists.size(transactions)}">0</div>
+                    <div class="stat-label" th:text="${selectedAccountNumber != null ? 'Account Transactions' : 'Total Transactions'}">Transactions</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value" style="color: #27ae60;">
+                        <span th:text="${#lists.size(transactions.?[type == 'DEPOSIT' or type == 'CREDIT'])}">0</span>
+                    </div>
+                    <div class="stat-label">💰 Credits/Deposits</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value" style="color: #e74c3c;">
+                        <span th:text="${#lists.size(transactions.?[type == 'WITHDRAWAL' or type == 'DEBIT'])}">0</span>
+                    </div>
+                    <div class="stat-label">💸 Debits/Withdrawals</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transactions Table -->
+        <div class="card">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>🆔 Transaction ID</th>
+                            <th>🏦 Account</th>
+                            <th>📝 Type</th>
+                            <th>💰 Amount</th>
+                            <th>📅 Date & Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="transaction : ${transactions}">
+                            <td>
+                                <span style="font-family: monospace; color: #667eea; font-weight: 600;" 
+                                      th:text="${transaction.id}"></span>
+                            </td>
+                            <td>
+                                <span style="font-weight: 500;" th:text="${transaction.accountNumber}"></span>
+                            </td>
+                            <td>
+                                <span class="transaction-type" th:text="${transaction.type}" 
+                                      th:classappend="${transaction.type == 'CREDIT' or transaction.type == 'DEPOSIT' ? 'credit' : 'debit'}">
+                                </span>
+                            </td>
+                            <td>
+                                <span th:class="${transaction.type == 'CREDIT' or transaction.type == 'DEPOSIT' ? 'credit-amount' : 'debit-amount'}"
+                                      style="font-weight: 600; font-size: 1.1rem;">
+                                    <span th:if="${transaction.type == 'CREDIT' or transaction.type == 'DEPOSIT'}">+</span>
+                                    <span th:if="${transaction.type == 'DEBIT' or transaction.type == 'WITHDRAWAL'}">-</span>
+                                    $<span th:text="${#numbers.formatDecimal(transaction.amount, 0, 2)}"></span>
+                                </span>
+                            </td>
+                            <td>
+                                <span style="color: #666;" th:text="${transaction.timestamp}"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Empty State -->
+            <div th:if="${#lists.isEmpty(transactions)}" style="text-align: center; padding: 3rem;">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">📊</div>
+                <h3 style="color: #666; margin-bottom: 1rem;">No Transactions Found</h3>
+                <p style="color: #999;">You haven't made any transactions yet.</p>
+                <a href="/accounts" class="btn btn-primary" style="margin-top: 1rem;">
+                    View Accounts
+                </a>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="nav-menu">
+            <a href="/accounts" class="nav-item">
+                🏦 Back to Accounts
+            </a>
+            <a href="/transactions" class="nav-item" th:if="${selectedAccountNumber}">
+                📊 View All My Transactions
+            </a>
+            <a href="/dashboard" class="nav-item">
+                🏠 Dashboard
+            </a>
+            <button class="nav-item" style="border: none; background: none;" onclick="window.print()">
+                🖨️ Print Statement
+            </button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 SecureBank. Your trusted financial partner.</p>
+    </div>
+
+    <style>
+        .credit-amount {
+            color: #27ae60 !important;
+        }
+        .debit-amount {
+            color: #e74c3c !important;
+        }
+        .transaction-type.credit {
+            background: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .transaction-type.debit {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        /* Handle the new transaction types */
+        .transaction-type:contains("DEPOSIT") {
+            background: rgba(46, 204, 113, 0.1);
+            color: #27ae60;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .transaction-type:contains("WITHDRAWAL") {
+            background: rgba(231, 76, 60, 0.1);
+            color: #e74c3c;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+    </style>
+
+    <script>
+        // Get current URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentAccountNumber = urlParams.get('accountNumber');
+
+        // Set the filter dropdown to the current account if one is selected
+        document.addEventListener('DOMContentLoaded', function() {
+            if (currentAccountNumber) {
+                const accountFilter = document.getElementById('accountFilter');
+                
+                // Add the current account as an option if it doesn't exist
+                let optionExists = false;
+                for (let option of accountFilter.options) {
+                    if (option.value === currentAccountNumber) {
+                        option.selected = true;
+                        optionExists = true;
+                        break;
+                    }
+                }
+                
+                if (!optionExists) {
+                    const option = document.createElement('option');
+                    option.value = currentAccountNumber;
+                    option.text = currentAccountNumber;
+                    option.selected = true;
+                    accountFilter.appendChild(option);
+                }
+            }
+            
+            // Populate account filter with unique account numbers from transactions
+            populateAccountFilter();
+        });
+
+        function populateAccountFilter() {
+            const accountFilter = document.getElementById('accountFilter');
+            const transactions = document.querySelectorAll('tbody tr');
+            const accountNumbers = new Set();
+            
+            transactions.forEach(row => {
+                const accountCell = row.children[1]; // Account number is in the second column
+                if (accountCell) {
+                    const accountNumber = accountCell.textContent.trim();
+                    if (accountNumber) {
+                        accountNumbers.add(accountNumber);
+                    }
+                }
+            });
+            
+            // Clear existing options except "All My Accounts"
+            while (accountFilter.children.length > 1) {
+                accountFilter.removeChild(accountFilter.lastChild);
+            }
+            
+            // Add account options
+            accountNumbers.forEach(accountNumber => {
+                const option = document.createElement('option');
+                option.value = accountNumber;
+                option.text = accountNumber;
+                if (accountNumber === currentAccountNumber) {
+                    option.selected = true;
+                }
+                accountFilter.appendChild(option);
+            });
+        }
+
+        function filterTransactions() {
+            const accountFilter = document.getElementById('accountFilter');
+            const selectedAccount = accountFilter.value;
+            
+            if (selectedAccount === '') {
+                // Show all transactions
+                window.location.href = '/transactions';
+            } else {
+                // Filter by selected account
+                window.location.href = `/transactions?accountNumber=${selectedAccount}`;
+            }
+        }
+
+        function refreshTransactions() {
+            window.location.reload();
+        }
+    </script>
+</body>
+</html>

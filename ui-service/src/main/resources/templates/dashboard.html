@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureBank - Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏦</text></svg>" />
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">🏦 SecureBank</div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="/accounts">Accounts</a></li>
+                    <li><a href="/transactions">Transactions</a></li>
+                    <li>
+                        <form th:action="@{/logout}" method="get" style="display: inline;">
+                            <button type="submit" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                                Sign Out
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="card">
+            <h1 style="margin-bottom: 0.5rem;">Welcome Back! 👋</h1>
+            <p style="text-align: center; color: #666; font-size: 1.2rem;">
+                Manage your finances with confidence and ease
+            </p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="dashboard-grid">
+            <div class="stat-card">
+                <div class="stat-value">💰</div>
+                <div class="stat-label">Total Balance</div>
+                <p style="color: #666; margin-top: 0.5rem;">View in Accounts</p>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-value">📊</div>
+                <div class="stat-label">Recent Activity</div>
+                <p style="color: #666; margin-top: 0.5rem;">View in Transactions</p>
+            </div>
+            
+            <div class="stat-card">
+                <div class="stat-value">🔒</div>
+                <div class="stat-label">Secure Banking</div>
+                <p style="color: #666; margin-top: 0.5rem;">Protected 24/7</p>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+            <h2 style="margin-bottom: 2rem;">Quick Actions</h2>
+            <div class="nav-menu">
+                <a href="/accounts" class="nav-item">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🏦</div>
+                    <div>View Accounts</div>
+                    <small style="color: #666;">Check balances & details</small>
+                </a>
+                
+                <a href="/transactions" class="nav-item">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">💳</div>
+                    <div>View Transactions</div>
+                    <small style="color: #666;">Transaction history</small>
+                </a>
+                
+                <a href="/accounts" class="nav-item">
+                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">💸</div>
+                    <div>Transfer Money</div>
+                    <small style="color: #666;">Send & receive funds</small>
+                </a>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="card">
+            <h3 style="text-align: center; margin-bottom: 2rem;">Why Choose SecureBank?</h3>
+            <div class="dashboard-grid">
+                <div style="text-align: center; padding: 1rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">🛡️</div>
+                    <h4 style="color: #667eea; margin-bottom: 0.5rem;">Bank-Grade Security</h4>
+                    <p style="color: #666;">Your data is protected with enterprise-level encryption</p>
+                </div>
+                
+                <div style="text-align: center; padding: 1rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
+                    <h4 style="color: #667eea; margin-bottom: 0.5rem;">Lightning Fast</h4>
+                    <p style="color: #666;">Instant transactions and real-time updates</p>
+                </div>
+                
+                <div style="text-align: center; padding: 1rem;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📱</div>
+                    <h4 style="color: #667eea; margin-bottom: 0.5rem;">Mobile Ready</h4>
+                    <p style="color: #666;">Access your accounts anywhere, anytime</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 SecureBank. Your trusted financial partner since day one.</p>
+        <p style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.8;">
+            🔒 All transactions are secured with 256-bit SSL encryption
+        </p>
+    </div>
+</body>
+</html>

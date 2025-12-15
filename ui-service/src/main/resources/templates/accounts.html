@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureBank - My Accounts</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏦</text></svg>" />
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <div class="logo">🏦 SecureBank</div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="/accounts" style="color: #667eea;">Accounts</a></li>
+                    <li><a href="/transactions">Transactions</a></li>
+                    <li>
+                        <form th:action="@{/logout}" method="get" style="display: inline;">
+                            <button type="submit" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                                Sign Out
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Page Header -->
+        <div class="card">
+            <h1 style="margin-bottom: 0.5rem;">💼 My Accounts</h1>
+            <p style="text-align: center; color: #666; font-size: 1.1rem;">
+                Overview of all your banking accounts
+            </p>
+        </div>
+
+        <!-- Success Message -->
+        <div th:if="${message}" class="card" style="background: #e8f5e8; border: 1px solid #4caf50; color: #2e7d32;">
+            <h3 style="margin-bottom: 0.5rem; color: #2e7d32;">✅ Success</h3>
+            <p th:text="${message}" style="margin: 0;">Success message</p>
+        </div>
+
+        <!-- Error Message -->
+        <div th:if="${error}" class="card" style="background: #ffebee; border: 1px solid #f44336; color: #c62828;">
+            <h3 style="margin-bottom: 0.5rem; color: #c62828;">⚠️ Error</h3>
+            <p th:text="${error}" style="margin: 0;">Error message</p>
+        </div>
+
+        <!-- Accounts Table -->
+        <div class="card">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>🏦 Account Number</th>
+                            <th>👤 Account Holder</th>
+                            <th>💰 Balance</th>
+                            <th>📊 Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="account : ${accounts}">
+                            <td>
+                                <span style="font-weight: 600; color: #667eea;" th:text="${account.accountNumber}"></span>
+                            </td>
+                            <td th:text="${account.accountHolderName}"></td>
+                            <td>
+                                <span style="font-weight: 600; color: #27ae60; font-size: 1.1rem;">
+                                    $<span th:text="${#numbers.formatDecimal(account.balance, 0, 2)}"></span>
+                                </span>
+                            </td>
+                            <td>
+                                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                    <button class="btn btn-primary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" 
+                                            onclick="openDepositModal(this.getAttribute('data-account-number'), this.getAttribute('data-account-holder'))"
+                                            th:attr="data-account-number=${account.accountNumber},data-account-holder=${account.accountHolderName}">
+                                        💰 Deposit
+                                    </button>
+                                    <button class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" 
+                                            onclick="openWithdrawModal(this.getAttribute('data-account-number'), this.getAttribute('data-account-holder'), this.getAttribute('data-balance'))"
+                                            th:attr="data-account-number=${account.accountNumber},data-account-holder=${account.accountHolderName},data-balance=${account.balance}">
+                                        💸 Withdraw
+                                    </button>
+                                    <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; background: #28a745; color: white; border: none;" 
+                                            onclick="openTransferModal(this.getAttribute('data-account-number'), this.getAttribute('data-account-holder'))"
+                                            th:attr="data-account-number=${account.accountNumber},data-account-holder=${account.accountHolderName}">
+                                        🔄 Transfer
+                                    </button>
+                                    <a th:href="@{'/transactions?accountNumber=' + ${account.accountNumber}}" 
+                                       class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; background: #f8f9fa; color: #667eea; border: 1px solid #dee2e6;">
+                                        📊 Transactions
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Empty State -->
+            <div th:if="${#lists.isEmpty(accounts)}" style="text-align: center; padding: 3rem;">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">🏦</div>
+                <h3 style="color: #666; margin-bottom: 1rem;">No Accounts Found</h3>
+                <p style="color: #999;">It looks like you don't have any accounts yet.</p>
+                <a href="/dashboard" class="btn btn-primary" style="margin-top: 1rem;">
+                    Go to Dashboard
+                </a>
+            </div>
+        </div>
+
+        <!-- Account Summary -->
+        <div class="card" th:if="${!#lists.isEmpty(accounts)}">
+            <h3 style="margin-bottom: 1.5rem;">📊 Account Summary</h3>
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-value" th:text="${#lists.size(accounts)}">0</div>
+                    <div class="stat-label">Total Accounts</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value">
+                        $<span th:text="${#numbers.formatDecimal(#aggregates.sum(accounts.![balance]), 0, 2)}">0.00</span>
+                    </div>
+                    <div class="stat-label">Total Balance</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value">✅</div>
+                    <div class="stat-label">All Active</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="nav-menu">
+            <a href="/dashboard" class="nav-item">
+                🏠 Back to Dashboard
+            </a>
+            <a href="/transactions" class="nav-item">
+                📊 View All Transactions
+            </a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 SecureBank. Your trusted financial partner.</p>
+    </div>
+
+    <!-- Deposit Modal -->
+    <div id="depositModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 2rem; border-radius: 12px; width: 90%; max-width: 400px;">
+            <h3 style="margin-bottom: 1rem; color: #333;">💰 Deposit Money</h3>
+            <p style="margin-bottom: 1rem; color: #666;">Account: <span id="depositAccountInfo"></span></p>
+            
+            <form id="depositForm" onsubmit="submitDeposit(event)">
+                <div style="margin-bottom: 1rem;">
+                    <label for="depositAmount" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Amount ($)</label>
+                    <input type="number" id="depositAmount" name="amount" min="0.01" step="0.01" required 
+                           style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                </div>
+                
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" onclick="closeDepositModal()" 
+                            style="padding: 0.75rem 1.5rem; background: #f8f9fa; color: #666; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                        Cancel
+                    </button>
+                    <button type="submit" 
+                            style="padding: 0.75rem 1.5rem; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                        Deposit
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Withdraw Modal -->
+    <div id="withdrawModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 2rem; border-radius: 12px; width: 90%; max-width: 400px;">
+            <h3 style="margin-bottom: 1rem; color: #333;">💸 Withdraw Money</h3>
+            <p style="margin-bottom: 1rem; color: #666;">Account: <span id="withdrawAccountInfo"></span></p>
+            <p style="margin-bottom: 1rem; color: #666;">Available Balance: $<span id="withdrawBalance"></span></p>
+            
+            <form id="withdrawForm" onsubmit="submitWithdraw(event)">
+                <div style="margin-bottom: 1rem;">
+                    <label for="withdrawAmount" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Amount ($)</label>
+                    <input type="number" id="withdrawAmount" name="amount" min="0.01" step="0.01" required 
+                           style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;">
+                </div>
+                
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" onclick="closeWithdrawModal()" 
+                            style="padding: 0.75rem 1.5rem; background: #f8f9fa; color: #666; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                        Cancel
+                    </button>
+                    <button type="submit" 
+                            style="padding: 0.75rem 1.5rem; background: #e74c3c; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                        Withdraw
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Transfer Modal -->
+    <div id="transferModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000;">
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 2rem; border-radius: 12px; width: 90%; max-width: 450px;">
+            <h3 style="margin-bottom: 1rem; color: #333;">🔄 Transfer Money</h3>
+            <p style="margin-bottom: 1rem; color: #666;">From Account: <span id="transferAccountInfo"></span></p>
+            
+            <form id="transferForm" onsubmit="submitTransfer(event)">
+                <input type="hidden" id="transferFromAccount" name="accountNumber" value="">
+                
+                <div style="margin-bottom: 1rem;">
+                    <label for="toAccountNumber" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">To Account Number</label>
+                    <input type="text" id="toAccountNumber" name="toAccountNumber" required 
+                           style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;"
+                           placeholder="Enter destination account number">
+                </div>
+                
+                <div style="margin-bottom: 1rem;">
+                    <label for="transferAmount" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Amount ($)</label>
+                    <input type="number" id="transferAmount" name="amount" min="0.01" step="0.01" required 
+                           style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;"
+                           placeholder="Enter amount to transfer">
+                </div>
+                
+                <div style="margin-bottom: 1rem;">
+                    <label for="transferDescription" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Description (Optional)</label>
+                    <input type="text" id="transferDescription" name="description" 
+                           style="width: 100%; padding: 0.75rem; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;"
+                           placeholder="Enter transfer description">
+                </div>
+                
+                <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                    <button type="button" onclick="closeTransferModal()" 
+                            style="padding: 0.75rem 1.5rem; background: #f8f9fa; color: #666; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                        Cancel
+                    </button>
+                    <button type="submit" id="transferSubmitBtn"
+                            style="padding: 0.75rem 1.5rem; background: #28a745; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                        Transfer Money
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentAccountNumber = '';
+
+        function openDepositModal(accountNumber, accountHolder) {
+            currentAccountNumber = accountNumber;
+            document.getElementById('depositAccountInfo').textContent = `${accountNumber} - ${accountHolder}`;
+            document.getElementById('depositModal').style.display = 'block';
+            document.getElementById('depositAmount').focus();
+        }
+
+        function closeDepositModal() {
+            document.getElementById('depositModal').style.display = 'none';
+            document.getElementById('depositForm').reset();
+        }
+
+        function openWithdrawModal(accountNumber, accountHolder, balance) {
+            currentAccountNumber = accountNumber;
+            document.getElementById('withdrawAccountInfo').textContent = `${accountNumber} - ${accountHolder}`;
+            document.getElementById('withdrawBalance').textContent = parseFloat(balance).toFixed(2);
+            document.getElementById('withdrawAmount').setAttribute('max', balance);
+            document.getElementById('withdrawModal').style.display = 'block';
+            document.getElementById('withdrawAmount').focus();
+        }
+
+        function closeWithdrawModal() {
+            document.getElementById('withdrawModal').style.display = 'none';
+            document.getElementById('withdrawForm').reset();
+        }
+
+        function openTransferModal(accountNumber, accountHolder) {
+            currentAccountNumber = accountNumber;
+            document.getElementById('transferAccountInfo').textContent = `${accountNumber} - ${accountHolder}`;
+            document.getElementById('transferFromAccount').value = accountNumber;
+            document.getElementById('transferModal').style.display = 'block';
+            document.getElementById('toAccountNumber').focus();
+        }
+
+        function closeTransferModal() {
+            document.getElementById('transferModal').style.display = 'none';
+            document.getElementById('transferForm').reset();
+        }
+
+        async function submitDeposit(event) {
+            event.preventDefault();
+            const amount = parseFloat(document.getElementById('depositAmount').value);
+            
+            if (amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/deposit`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `accountNumber=${currentAccountNumber}&amount=${amount}`
+                });
+
+                if (response.ok) {
+                    alert('Deposit successful!');
+                    closeDepositModal();
+                    location.reload();
+                } else {
+                    const error = await response.text();
+                    alert('Deposit failed: ' + error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        async function submitWithdraw(event) {
+            event.preventDefault();
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const maxBalance = parseFloat(document.getElementById('withdrawBalance').textContent);
+            
+            if (amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+
+            if (amount > maxBalance) {
+                alert('Insufficient funds');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/withdraw`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `accountNumber=${currentAccountNumber}&amount=${amount}`
+                });
+
+                if (response.ok) {
+                    alert('Withdrawal successful!');
+                    closeWithdrawModal();
+                    location.reload();
+                } else {
+                    const error = await response.text();
+                    alert('Withdrawal failed: ' + error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        }
+
+        // Close modals when clicking outside
+        document.getElementById('depositModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeDepositModal();
+            }
+        });
+
+        document.getElementById('withdrawModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeWithdrawModal();
+            }
+        });
+
+        async function submitTransfer(event) {
+            event.preventDefault();
+            
+            const fromAccount = document.getElementById('transferFromAccount').value;
+            const toAccount = document.getElementById('toAccountNumber').value;
+            const amount = parseFloat(document.getElementById('transferAmount').value);
+            const description = document.getElementById('transferDescription').value;
+            const submitBtn = document.getElementById('transferSubmitBtn');
+            
+            // Validation
+            if (!fromAccount || !toAccount || !amount || amount <= 0) {
+                alert('Please fill in all required fields with valid values');
+                return;
+            }
+            
+            if (fromAccount === toAccount) {
+                alert('Cannot transfer to the same account');
+                return;
+            }
+            
+            // Disable submit button to prevent multiple submissions
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Processing...';
+            
+            try {
+                const response = await fetch('/transfer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `accountNumber=${fromAccount}&toAccountNumber=${toAccount}&amount=${amount}&description=${encodeURIComponent(description || '')}`
+                });
+                
+                if (response.ok) {
+                    alert('Transfer successful!');
+                    closeTransferModal();
+                    location.reload();
+                } else {
+                    const errorText = await response.text();
+                    alert('Transfer failed: ' + errorText);
+                }
+            } catch (error) {
+                console.error('Transfer error:', error);
+                alert('Error processing transfer: ' + error.message);
+            } finally {
+                // Re-enable submit button
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Transfer Money';
+            }
+        }
+
+        document.getElementById('transferModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeTransferModal();
+            }
+        });
+    </script>
+</body>
+</html>
