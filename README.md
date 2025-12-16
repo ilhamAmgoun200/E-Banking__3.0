@@ -1,4 +1,4 @@
-# 🏦 Online Banking Portal
+# 🏦 E-Banking_3.0
 
 <div align="center">
   <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white" alt="Java">
@@ -258,21 +258,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
-
-## 👥 Development Team
-
-<div align="center">
-
-| <img src="https://github.com/KrishnaSaxena108.png" width="80" height="80" style="border-radius: 50%;"> | <img src="https://github.com/spydiecy.png" width="80" height="80" style="border-radius: 50%;"> | <img src="https://github.com/JollyAnsh.png" width="80" height="80" style="border-radius: 50%;"> | <img src="https://github.com/Armaan25Thind.png" width="80" height="80" style="border-radius: 50%;"> |
-|:---:|:---:|:---:|:---:|
-| **🚀 Lead Developer** | **🏗️ Project Architect** | **🎨 Frontend Developer** | **💻 Frontend Developer** |
-| **Krishna Saxena** | **Spydiecy** | **JollyAnsh** | **Armaan Thind** |
-| [@KrishnaSaxena108](https://github.com/KrishnaSaxena108) | [@spydiecy](https://github.com/spydiecy) | [@JollyAnsh](https://github.com/JollyAnsh) | [@Armaan25Thind](https://github.com/Armaan25Thind) |
-| Project leadership, backend development, microservices architecture | System design, database architecture, service integration | UI/UX design, frontend implementation, responsive design | Frontend development, user experience, client-side functionality |
-
-</div>
-
-*This project was developed as a collaborative college assignment to demonstrate modern microservices architecture and teamwork in software development.*
 
 ## 🙏 Acknowledgments
 
