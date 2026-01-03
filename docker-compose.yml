@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: ebanking_postgres
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ebanking-net
+
+  keycloak:
+    # We switch to 'latest' to force Docker to find the correct version for your CPU
+    image: quay.io/keycloak/keycloak:latest
+    container_name: ebanking_keycloak
+    command: start-dev --import-realm
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./realm-config:/opt/keycloak/data/import
+    depends_on:
+      - postgres
+    networks:
+      - ebanking-net
+
+networks:
+  ebanking-net:
+    driver: bridge
+
+volumes:
+  postgres_data:

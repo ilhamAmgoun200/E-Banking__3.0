@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: auth-service  # Changed from "demo" to be more descriptive
+
+server:
+  port: 8090
+
+# Your Security Config
+internal:
+  secret: BankingSuperSecretKey_998877  # <--- Put it here
+
+keycloak:
+  server-url: http://localhost:8090
+  realm: ebanking-realm
+  admin-client-id: admin-cli
+  admin-username: admin
+  admin-password: admin
+  app-client-id: ebanking-app
+  app-client-secret: 93TuPkQfHVUmWy6W09AEr2CtZCNldszE
