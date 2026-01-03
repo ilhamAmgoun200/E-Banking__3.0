@@ -3,61 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SecureBank - Login</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <title>NexBank Digital - Connexion</title>
+    <link rel="stylesheet" th:href="@{/css/home-style.css}" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏦</text></svg>" />
+    <style>
+        /* Ajustements spécifiques pour la page login */
+        body.client-theme { background: #F5F3FF; }
+        body.agent-theme { background: #0A192F; }
+
+        .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        .auth-card {
+            background: white; padding: 3rem; border-radius: 24px;
+            width: 100%; max-width: 450px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .agent-theme .auth-card { background: #1E293B; color: white; border: 1px solid #334155; }
+        .form-control {
+            width: 100%; padding: 0.8rem; margin-top: 0.5rem; border: 1px solid #E2E8F0;
+            border-radius: 10px; font-family: inherit;
+        }
+        .agent-theme .form-control { background: #0F172A; border-color: #334155; color: white; }
+        .agent-theme .logo span { color: #A78BFA; }
+    </style>
 </head>
-<body>
-    <div class="container">
-        <div class="card auth-card float">
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <div class="logo" style="font-size: 2.5rem; margin-bottom: 0.5rem;">🏦 SecureBank</div>
-                <p style="color: #666; font-size: 1.1rem;">Welcome back! Please sign in to your account</p>
-            </div>
-            
-            <!-- Logout message -->
-            <div th:if="${param.logout}" class="alert alert-success">
-                <i class="fas fa-check-circle"></i>
-                You have been logged out successfully.
+<body th:class="${loginType == 'agent'} ? 'agent-theme' : 'client-theme'">
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <div class="logo" style="font-size: 2rem;">NexBank<span>Digital</span></div>
+            <p th:if="${loginType == 'agent'}" style="color: #94A3B8; margin-top: 0.5rem;">
+                <i class="fas fa-user-shield"></i> Portail Administration & Staff
+            </p>
+            <p th:unless="${loginType == 'agent'}" style="color: #64748B; margin-top: 0.5rem;">
+                Ravi de vous revoir ! Connectez-vous à votre espace.
+            </p>
+        </div>
+
+        <div th:if="${error}" class="feature-tag" style="background: rgba(239, 68, 68, 0.1); color: #EF4444; border-left: 4px solid #EF4444; margin-bottom: 1.5rem; padding: 1rem;">
+            <i class="fas fa-exclamation-circle"></i> <span th:text="${error}"></span>
+        </div>
+
+        <form th:action="@{/login}" method="post">
+            <div style="margin-bottom: 1.5rem;">
+                <label style="font-weight: 600; font-size: 0.9rem;">Nom d'utilisateur</label>
+                <input type="text" name="username" class="form-control" required placeholder="ex: jean.dupont">
             </div>
 
-            <!-- Traditional Login Form -->
-            <form method="post" action="/login">
-                <div class="form-group">
-                    <label for="username">
-                        <i class="fas fa-user"></i> Username
-                    </label>
-                    <input type="text" id="username" name="username" required 
-                           placeholder="Enter your username" />
-                </div>
-                
-                <div class="form-group">
-                    <label for="password">
-                        <i class="fas fa-lock"></i> Password
-                    </label>
-                    <input type="password" id="password" name="password" required 
-                           placeholder="Enter your password" />
-                </div>
-                
-                <button type="submit" class="btn btn-primary btn-full">
-                    <i class="fas fa-sign-in-alt"></i> Sign In
-                </button>
-            </form>
-            
-            <div th:if="${error}" class="alert alert-error">
-                <strong>Error:</strong> <span th:text="${error}"></span>
+            <div style="margin-bottom: 2rem;">
+                <label style="font-weight: 600; font-size: 0.9rem;">Mot de passe</label>
+                <input type="password" name="password" class="form-control" required placeholder="••••••••">
             </div>
-            
-            <div class="auth-link">
-                Don't have an account? 
-                <a th:href="@{/register}">Create one now</a>
-            </div>
-        </div>
-        
-        <div class="footer">
-            <p>&copy; 2024 SecureBank. Your trusted financial partner.</p>
+
+            <button type="submit" class="btn-primary" style="width: 100%; border: none; cursor: pointer;">
+                Se connecter <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+            </button>
+        </form>
+
+        <div class="auth-link" style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem;">
+                <span th:if="${loginType != 'agent'}">
+                    Nouveau client ? <a th:href="@{/register}" style="color: #8B5CF6; font-weight: 600; text-decoration: none;">Ouvrir un compte</a>
+                </span>
+            <span th:if="${loginType == 'agent'}" style="color: #94A3B8;">
+                    Accès restreint au personnel autorisé.
+                </span>
         </div>
     </div>
+</div>
+
 </body>
 </html>

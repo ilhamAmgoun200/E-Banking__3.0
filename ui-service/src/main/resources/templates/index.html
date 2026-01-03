@@ -1,15 +1,60 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>Online Banking Portal</title>
-	<link rel="stylesheet" th:href="@{/css/style.css}" />
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Nexus Bank | L'avenir de votre argent</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+	<link rel="stylesheet" th:href="@{/css/home-style.css}">
 </head>
 <body>
-	<h1>Welcome to Online Banking Portal</h1>
-	<div>
-		<a href="/accounts">View Accounts</a> |
-		<a href="/transactions">View Transactions</a> |
-		<a href="/dashboard">Dashboard</a>
-	</div>
+
+<header class="glass-header">
+	<nav class="nav-container">
+		<div class="logo">NEXUS<span>BANK</span></div>
+		<div class="nav-auth">
+			<a th:href="@{/login}" class="btn-text">Se connecter</a>
+			<a th:href="@{/register}" class="btn-primary-sm" style="margin-left: 20px; padding: 10px 20px; background: #6366f1; border-radius: 8px; color: white; text-decoration: none;">Ouvrir un compte</a>
+		</div>
+	</nav>
+</header>
+
+<main>
+	<section class="hero">
+		<div class="hero-content">
+			<h1 class="animate-up">Votre banque, <br><span class="gradient-text">réinventée.</span></h1>
+			<p class="animate-up delay-1">Une architecture microservices robuste pour une sécurité et une rapidité inégalées.</p>
+		</div>
+	</section>
+
+	<section class="portal-selection">
+		<div class="portal-container">
+
+			<div class="portal-card client-card animate-up delay-2">
+				<div class="icon-box">
+					<i class="fas fa-wallet"></i>
+				</div>
+				<h2>Espace Client</h2>
+				<p>Gérez vos comptes, consultez vos transactions et effectuez des virements en toute sécurité.</p>
+				<a th:href="@{/login}" class="btn-portal">Accéder à mes comptes</a>
+			</div>
+
+			<div class="portal-card agent-card animate-up delay-3">
+				<div class="icon-box">
+					<i class="fas fa-user-shield"></i>
+				</div>
+				<h2>Espace Agent</h2>
+				<p>Interface d'administration pour la gestion des clients et la validation des opérations.</p>
+				<a th:href="@{/login}" class="btn-portal outline">Portail Professionnel</a>
+			</div>
+
+		</div>
+	</section>
+</main>
+
+<footer class="simple-footer" style="text-align: center; padding: 40px; color: #94a3b8;">
+	<p>&copy; 2026 Nexus Bank - Système Bancaire Distribué. Sécurisé par Keycloak.</p>
+</footer>
+
 </body>
 </html>

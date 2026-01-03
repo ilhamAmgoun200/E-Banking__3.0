@@ -6,5 +6,5 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class DashboardController {
     
-    // Logout functionality moved to AuthController to avoid mapping conflicts
+    // Logout functionality moved to AuthController.java to avoid mapping conflicts
 }

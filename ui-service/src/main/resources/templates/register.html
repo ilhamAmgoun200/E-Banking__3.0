@@ -3,55 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SecureBank - Create Account</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}" />
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏦</text></svg>" />
+    <title>NexBank - Inscription</title>
+    <link rel="stylesheet" th:href="@{/css/home-style.css}" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background: #F5F3FF; }
+        .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        .auth-card { background: white; padding: 2.5rem; border-radius: 24px; width: 100%; max-width: 550px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .full-width { grid-column: span 2; }
+        .form-control { width: 100%; padding: 0.8rem; margin-top: 0.4rem; border: 1px solid #E2E8F0; border-radius: 10px; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <div class="card auth-card float">
-            <div style="text-align: center; margin-bottom: 2rem;">
-                <div class="logo" style="font-size: 2.5rem; margin-bottom: 0.5rem;">🏦 SecureBank</div>
-                <p style="color: #666; font-size: 1.1rem;">Join thousands of satisfied customers</p>
-            </div>
-            
-            <form method="post" action="/register">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required 
-                           placeholder="Choose a unique username" />
-                </div>
-                
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required 
-                           placeholder="Create a strong password" />
-                </div>
-                
-                <div class="form-group">
-                    <label for="accountNumber">Account Number</label>
-                    <input type="text" id="accountNumber" name="accountNumber" required 
-                           placeholder="Enter your account number" />
-                </div>
-                
-                <button type="submit" class="btn btn-primary btn-full">
-                    Create Account
-                </button>
-            </form>
-            
-            <div th:if="${error}" class="alert alert-error">
-                <strong>Error:</strong> <span th:text="${error}"></span>
-            </div>
-            
-            <div class="auth-link">
-                Already have an account? 
-                <a th:href="@{/login}">Sign in here</a>
-            </div>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <div class="logo">NexBank<span>Digital</span></div>
+            <p style="color: #64748B;">Rejoignez le futur de la banque en quelques secondes.</p>
         </div>
-        
-        <div class="footer">
-            <p>&copy; 2024 SecureBank. Your trusted financial partner.</p>
+
+        <form th:action="@{/register}" method="post">
+            <div class="form-grid">
+                <div>
+                    <label style="font-size: 0.85rem; font-weight: 600;">Prénom</label>
+                    <input type="text" name="firstName" class="form-control" required placeholder="Jean">
+                </div>
+                <div>
+                    <label style="font-size: 0.85rem; font-weight: 600;">Nom</label>
+                    <input type="text" name="lastName" class="form-control" required placeholder="Dupont">
+                </div>
+                <div class="full-width">
+                    <label style="font-size: 0.85rem; font-weight: 600;">Nom d'utilisateur</label>
+                    <input type="text" name="username" class="form-control" required placeholder="jdupont88">
+                </div>
+                <div class="full-width">
+                    <label style="font-size: 0.85rem; font-weight: 600;">Numéro de Compte (Souhaité)</label>
+                    <input type="text" name="accountNumber" class="form-control" required placeholder="FR76 3000...">
+                </div>
+                <div class="full-width" style="margin-bottom: 1.5rem;">
+                    <label style="font-size: 0.85rem; font-weight: 600;">Mot de passe</label>
+                    <input type="password" name="password" class="form-control" required placeholder="Créer un mot de passe fort">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary" style="width: 100%; border: none; cursor: pointer;">
+                Créer mon compte <i class="fas fa-check-circle" style="margin-left: 8px;"></i>
+            </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem;">
+            Déjà client ? <a th:href="@{/login}" style="color: #8B5CF6; font-weight: 600; text-decoration: none;">Se connecter</a>
         </div>
     </div>
+</div>
+
 </body>
 </html>

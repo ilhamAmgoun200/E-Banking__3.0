@@ -1,0 +1,11 @@
+server:
+  port: 8082 # user-service est sur 8081, Keycloak sur 8080
+
+keycloak:
+  server-url: http://localhost:8080
+  realm: ebanking-realm
+  admin-client-id: admin-cli
+  admin-username: admin      # Votre login admin Keycloak
+  admin-password: admin      # Votre password admin Keycloak
+  app-client-id: ebanking-app    
+  app-client-secret: 93TuPkQfHVUmWy6W09AEr2CtZCNldszE

@@ -1,17 +1,15 @@
 package com.onlinebanking.uiservice.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-
+import com.onlinebanking.uiservice.service.AccountServiceClient;
 import com.onlinebanking.uiservice.service.UserServiceClient;
 import com.onlinebanking.uiservice.service.UserServiceClientWithCircuitBreaker;
-import com.onlinebanking.uiservice.service.AccountServiceClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.http.ResponseEntity;
+
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,129 +18,176 @@ import java.util.Map;
 public class AuthController {
 
     @Autowired
-    private UserServiceClient userServiceClient;
-
-    @Autowired
     private UserServiceClientWithCircuitBreaker userServiceClientWithCircuitBreaker;
 
     @Autowired
     private AccountServiceClient accountServiceClient;
 
-    @GetMapping({"/", "/login"})
-    public String loginPage() {
+    /**
+     * PAGE D'ACCUEIL
+     */
+    @GetMapping("/")
+    public String home() {
+        return "home";
+    }
+
+    /**
+     * PAGE DE LOGIN
+     * @param type optionnel pour adapter le style (ex: /login?type=agent)
+     */
+    @GetMapping("/login")
+    public String loginPage(@RequestParam(value = "type", required = false) String type, Model model) {
+        model.addAttribute("loginType", type != null ? type : "client");
         return "login";
     }
 
-    @GetMapping("/dashboard")
-    public String dashboard(Model model, HttpSession session) {
-        // Traditional login user
-        String username = (String) session.getAttribute("username");
-        if (username != null) {
-            model.addAttribute("name", username);
-            model.addAttribute("loginType", "traditional");
-        }
-        return "dashboard";
-    }
-
+    /**
+     * TRAITEMENT DU LOGIN
+     */
     @PostMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password, Model model, HttpSession session) {
-        System.out.println("Login attempt for username: " + username);
-        
+    public String login(@RequestParam String username,
+                        @RequestParam String password,
+                        Model model,
+                        HttpSession session) {
+
+        System.out.println("Tentative de connexion : " + username);
+
         Map<String, String> req = new HashMap<>();
         req.put("username", username);
         req.put("password", password);
-        
-        // Use circuit breaker for login
+
+        // Appel au microservice Auth via le Circuit Breaker
         Map<String, Object> response = userServiceClientWithCircuitBreaker.loginWithFallback(req);
-        
-        System.out.println("Login response: " + response);
-        
+
         if (response.containsKey("token")) {
-            // Store username in session
+            // 1. Stockage de la session
             session.setAttribute("username", username);
-            System.out.println("Login successful for: " + username);
+            session.setAttribute("token", response.get("token"));
+
+            // 2. Récupération et stockage du rôle
+            // On vérifie si le rôle vient de la réponse, sinon ROLE_USER par défaut
+            String userRole = (String) response.getOrDefault("role", "ROLE_USER");
+            session.setAttribute("role", userRole);
+
+            System.out.println("Login réussi. Utilisateur: " + username + " | Rôle: " + userRole);
+
+            // Redirection intelligente selon le rôle
+            if (isAdminOrAgent(userRole)) {
+                return "redirect:/admin/portal";
+            }
             return "redirect:/dashboard";
         } else {
-            // Handle circuit breaker open state with special message
-            if (response.containsKey("circuitBreakerOpen") && (Boolean) response.get("circuitBreakerOpen")) {
-                model.addAttribute("error", "🔴 " + response.get("error"));
-                model.addAttribute("circuitBreakerError", true);
-                System.out.println("Circuit breaker error for: " + username);
-            } else {
-                model.addAttribute("error", response.getOrDefault("error", "Login failed"));
-                System.out.println("Login failed for: " + username + " - " + response.getOrDefault("error", "Login failed"));
-            }
+            handleLoginError(response, model);
             return "login";
         }
     }
 
+    /**
+     * DASHBOARD CLIENT (Style Mauve)
+     */
+    @GetMapping("/dashboard")
+    public String clientDashboard(Model model, HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        if (username == null) return "redirect:/login";
+
+        model.addAttribute("name", username);
+        model.addAttribute("role", session.getAttribute("role"));
+        return "dashboard"; // Vue Client
+    }
+
+    /**
+     * PORTAIL AGENT / ADMIN (Style Dark Navy)
+     */
+    @GetMapping("/admin/portal")
+    public String adminPortal(Model model, HttpSession session) {
+        String username = (String) session.getAttribute("username");
+        String role = (String) session.getAttribute("role");
+
+        if (username == null || !isAdminOrAgent(role)) {
+            return "redirect:/login?type=agent";
+        }
+
+        model.addAttribute("name", username);
+        model.addAttribute("role", role);
+        return "admin-dashboard"; // Vue Agent/Admin
+    }
+
+    /**
+     * PAGE D'INSCRIPTION
+     */
     @GetMapping("/register")
     public String registerPage() {
         return "register";
     }
 
+    /**
+     * TRAITEMENT DE L'INSCRIPTION
+     */
     @PostMapping("/register")
-    public String register(@RequestParam String username, @RequestParam String password, @RequestParam String accountNumber, Model model) {
+    public String register(@RequestParam String username,
+                           @RequestParam String password,
+                           @RequestParam String accountNumber,
+                           Model model) {
+
         Map<String, String> req = new HashMap<>();
         req.put("username", username);
         req.put("password", password);
         req.put("accountNumber", accountNumber);
-        
-        // Use circuit breaker for registration
+
         Map<String, Object> response = userServiceClientWithCircuitBreaker.registerWithFallback(req);
-        
-        if (response.containsKey("success") && (Boolean)response.get("success")) {
-            // Create account in account-service
-            Map<String, Object> accountReq = new HashMap<>();
-            accountReq.put("accountNumber", accountNumber);
-            accountReq.put("accountHolderName", username);
-            accountReq.put("balance", 0.0);
-            accountReq.put("username", username);
-            try {
-                accountServiceClient.createAccount(accountReq);
-            } catch (Exception ex) {
-                // Optionally log or handle account creation failure
-                model.addAttribute("warning", "User registered but account creation failed. Please contact support.");
-            }
-            return "redirect:/login";
+
+        if (response.containsKey("success") && (Boolean) response.get("success")) {
+            // Création du compte bancaire initial dans Account-Service
+            createInitialAccount(username, accountNumber, model);
+            return "redirect:/login?registered=true";
         } else {
-            // Handle circuit breaker open state with special message
-            if (response.containsKey("circuitBreakerOpen") && (Boolean) response.get("circuitBreakerOpen")) {
-                model.addAttribute("error", "🔴 " + response.get("error"));
-                model.addAttribute("circuitBreakerError", true);
-            } else {
-                model.addAttribute("error", response.getOrDefault("error", "Registration failed"));
-            }
+            handleRegistrationError(response, model);
             return "register";
         }
     }
 
-    // Circuit breaker monitoring endpoint for user service
-    @GetMapping("/user-service/circuit-breaker/status")
-    @ResponseBody
-    public ResponseEntity<Map<String, Object>> getUserServiceCircuitBreakerStatus() {
-        Map<String, Object> status = new HashMap<>();
-        
-        // Get user service circuit breaker status
-        String state = userServiceClientWithCircuitBreaker.getCircuitBreakerState();
-        io.github.resilience4j.circuitbreaker.CircuitBreaker.Metrics metrics = userServiceClientWithCircuitBreaker.getCircuitBreakerMetrics();
-        
-        Map<String, Object> userServiceStatus = new HashMap<>();
-        userServiceStatus.put("state", state);
-        userServiceStatus.put("failureRate", metrics.getFailureRate());
-        userServiceStatus.put("numberOfBufferedCalls", metrics.getNumberOfBufferedCalls());
-        userServiceStatus.put("numberOfFailedCalls", metrics.getNumberOfFailedCalls());
-        userServiceStatus.put("numberOfSuccessfulCalls", metrics.getNumberOfSuccessfulCalls());
-        
-        status.put("user-service", userServiceStatus);
-        status.put("timestamp", java.time.LocalDateTime.now());
-        
-        return ResponseEntity.ok(status);
-    }
-
+    /**
+     * LOGOUT
+     */
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
-        return "redirect:/login";
+        return "redirect:/";
+    }
+
+    // --- MÉTHODES PRIVÉES (HELPERS) ---
+
+    private boolean isAdminOrAgent(String role) {
+        return "ROLE_ADMIN".equals(role) || "ROLE_AGENT".equals(role);
+    }
+
+    private void createInitialAccount(String username, String accountNumber, Model model) {
+        Map<String, Object> accountReq = new HashMap<>();
+        accountReq.put("accountNumber", accountNumber);
+        accountReq.put("accountHolderName", username);
+        accountReq.put("balance", 0.0);
+        accountReq.put("username", username);
+        try {
+            accountServiceClient.createAccount(accountReq);
+        } catch (Exception ex) {
+            System.err.println("Erreur création compte: " + ex.getMessage());
+            model.addAttribute("warning", "Compte créé, mais l'initialisation bancaire a échoué.");
+        }
+    }
+
+    private void handleLoginError(Map<String, Object> response, Model model) {
+        if (Boolean.TRUE.equals(response.get("circuitBreakerOpen"))) {
+            model.addAttribute("error", "🔴 Service d'authentification indisponible (Maintenance)");
+        } else {
+            model.addAttribute("error", response.getOrDefault("error", "Nom d'utilisateur ou mot de passe incorrect"));
+        }
+    }
+
+    private void handleRegistrationError(Map<String, Object> response, Model model) {
+        if (Boolean.TRUE.equals(response.get("circuitBreakerOpen"))) {
+            model.addAttribute("error", "🔴 Le service d'inscription est saturé. Réessayez plus tard.");
+        } else {
+            model.addAttribute("error", response.getOrDefault("error", "Erreur lors de la création du compte"));
+        }
     }
 }

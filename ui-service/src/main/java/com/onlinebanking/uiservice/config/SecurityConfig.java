@@ -13,10 +13,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .authorizeHttpRequests(authz -> authz
-                .antMatchers("/", "/login", "/register", "/dashboard", "/accounts", "/transactions", "/css/**", "/js/**", "/images/**", "/user-service/circuit-breaker/status", "/logout").permitAll()
-                .anyRequest().permitAll()
-            )
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/", "/login", "/register", "/css/**", "/js/**").permitAll()
+                        // On protège les dashboards par rôle
+                        .requestMatchers("/dashboard").hasRole("CLIENT")
+                        .requestMatchers("/admin/**").hasAnyRole("AGENT", "ADMIN")
+                        .anyRequest().authenticated()
+                )
             .logout(logout -> logout
                 .logoutSuccessUrl("/")
                 .permitAll()
