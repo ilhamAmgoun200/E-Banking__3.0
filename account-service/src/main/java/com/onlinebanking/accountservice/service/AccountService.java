@@ -19,17 +19,21 @@ public class AccountService {
     }
 
     public Account createAccount(Account account) {
-        // Si role non défini, mettre CLIENT par défaut
+        // Gestion du rôle
         if (account.getRole() == null || account.getRole().isEmpty()) {
             account.setRole("CLIENT");
         } else {
-            // Vérifier que le rôle est correct
             String r = account.getRole().toUpperCase();
             if (!r.equals("ADMIN") && !r.equals("AGENT") && !r.equals("CLIENT")) {
-                account.setRole("CLIENT"); // default fallback
+                account.setRole("CLIENT");
             } else {
                 account.setRole(r);
             }
+        }
+
+        // Gestion du statut
+        if (account.getStatus() == null || account.getStatus().isEmpty()) {
+            account.setStatus("ACTIVE");
         }
 
         return accountRepository.save(account);

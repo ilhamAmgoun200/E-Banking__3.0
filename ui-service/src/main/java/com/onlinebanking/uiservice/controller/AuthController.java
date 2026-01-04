@@ -15,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.web.client.RestTemplate;
+
 
 @Controller
 public class AuthController {
@@ -27,6 +29,9 @@ public class AuthController {
 
     @Autowired
     private AccountServiceClient accountServiceClient;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @GetMapping({"/", "/login"})
     public String loginPage() {
@@ -47,21 +52,58 @@ public class AuthController {
     @PostMapping("/login")
     public String login(@RequestParam String username, @RequestParam String password, Model model, HttpSession session) {
         System.out.println("Login attempt for username: " + username);
-        
+
         Map<String, String> req = new HashMap<>();
         req.put("username", username);
         req.put("password", password);
-        
+
         // Use circuit breaker for login
         Map<String, Object> response = userServiceClientWithCircuitBreaker.loginWithFallback(req);
-        
+
         System.out.println("Login response: " + response);
-        
+
         if (response.containsKey("token")) {
             // Store username in session
             session.setAttribute("username", username);
-            System.out.println("Login successful for: " + username);
+
+            // Récupérer le rôle avec RestTemplate au lieu de Feign
+            try {
+                String accountServiceUrl = "http://localhost:8081/accounts/user/" + username;
+                System.out.println("🔍 Fetching accounts from: " + accountServiceUrl);
+
+                Map<String, Object>[] accounts = restTemplate.getForObject(accountServiceUrl, Map[].class);
+
+                System.out.println("🔍 Accounts found: " + (accounts != null ? accounts.length : "null"));
+
+                if (accounts != null && accounts.length > 0) {
+                    String role = (String) accounts[0].get("role");
+                    session.setAttribute("role", role);
+
+                    System.out.println("✅ Role detected: " + role);
+
+                    // Redirection selon le rôle
+                    if ("ADMIN".equalsIgnoreCase(role)) {
+                        System.out.println("🔄 Redirecting ADMIN to /admin/accounts");
+                        return "redirect:/admin/accounts";
+                    } else if ("AGENT".equalsIgnoreCase(role)) {
+                        System.out.println("🔄 Redirecting AGENT to /agent/accounts");
+                        return "redirect:/agent/accounts";
+                    } else {
+                        System.out.println("🔄 Redirecting CLIENT to /dashboard");
+                        return "redirect:/dashboard";
+                    }
+                } else {
+                    System.out.println("⚠️ No accounts found for user");
+                }
+            } catch (Exception e) {
+                System.err.println("❌ Error fetching user role: " + e.getMessage());
+                e.printStackTrace();
+            }
+
+            // Fallback si on ne trouve pas le rôle
+            System.out.println("⚠️ Fallback to dashboard");
             return "redirect:/dashboard";
+
         } else {
             // Handle circuit breaker open state with special message
             if (response.containsKey("circuitBreakerOpen") && (Boolean) response.get("circuitBreakerOpen")) {
@@ -96,6 +138,8 @@ public class AuthController {
             @RequestParam(required = false, defaultValue = "ACTIVE") String status,
             Model model) {
 
+        System.out.println("🔍 Registration - Username: " + username + ", Role: " + role);
+
         Map<String, String> req = new HashMap<>();
         req.put("username", username);
         req.put("password", password);
@@ -112,15 +156,28 @@ public class AuthController {
         Map<String, Object> response = userServiceClientWithCircuitBreaker.registerWithFallback(req);
 
         if (response.containsKey("success") && (Boolean) response.get("success")) {
-            // Création compte dans account-service
+            // Création compte dans account-service avec RestTemplate
             Map<String, Object> accountReq = new HashMap<>();
             accountReq.put("accountNumber", accountNumber);
             accountReq.put("accountHolderName", username);
             accountReq.put("balance", 0.0);
             accountReq.put("username", username);
+            accountReq.put("role", role);
+            accountReq.put("status", status);
+
+            System.out.println("📤 Sending to account-service: " + accountReq);
+
             try {
-                accountServiceClient.createAccount(accountReq);
+                String accountServiceUrl = "http://localhost:8081/accounts";
+                Map<String, Object> accountResponse = restTemplate.postForObject(
+                        accountServiceUrl,
+                        accountReq,
+                        Map.class
+                );
+                System.out.println("✅ Account created successfully: " + accountResponse);
             } catch (Exception ex) {
+                System.err.println("❌ Account creation failed: " + ex.getMessage());
+                ex.printStackTrace();
                 model.addAttribute("warning", "User registered but account creation failed. Please contact support.");
             }
             return "redirect:/login";

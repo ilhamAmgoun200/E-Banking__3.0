@@ -14,7 +14,10 @@ public class Account {
     private String username;
 
     @Column(nullable = false)
-    private String role = "CLIENT"; // <-- NOUVEAU CHAMP
+    private String role = "CLIENT"; //// <-- NOUVEAU CHAMP
+
+    @Column(nullable = false)
+    private String status = "ACTIVE";
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -33,4 +36,7 @@ public class Account {
 
     public String getRole() { return role; }      // <-- Getter
     public void setRole(String role) { this.role = role; } // <-- Setter
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }
