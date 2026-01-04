@@ -82,17 +82,37 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@RequestParam String username, @RequestParam String password, @RequestParam String accountNumber, Model model) {
+    public String register(
+            @RequestParam String username,
+            @RequestParam String password,
+            @RequestParam String accountNumber,
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String phoneNumber,
+            @RequestParam(required = false) String address,
+            @RequestParam(required = false) String cin,
+            @RequestParam(required = false, defaultValue = "CLIENT") String role,
+            @RequestParam(required = false, defaultValue = "ACTIVE") String status,
+            Model model) {
+
         Map<String, String> req = new HashMap<>();
         req.put("username", username);
         req.put("password", password);
         req.put("accountNumber", accountNumber);
-        
-        // Use circuit breaker for registration
+        req.put("firstName", firstName);
+        req.put("lastName", lastName);
+        req.put("email", email);
+        req.put("phoneNumber", phoneNumber);
+        req.put("address", address);
+        req.put("cin", cin);
+        req.put("role", role);
+        req.put("status", status);
+
         Map<String, Object> response = userServiceClientWithCircuitBreaker.registerWithFallback(req);
-        
-        if (response.containsKey("success") && (Boolean)response.get("success")) {
-            // Create account in account-service
+
+        if (response.containsKey("success") && (Boolean) response.get("success")) {
+            // Création compte dans account-service
             Map<String, Object> accountReq = new HashMap<>();
             accountReq.put("accountNumber", accountNumber);
             accountReq.put("accountHolderName", username);
@@ -101,21 +121,15 @@ public class AuthController {
             try {
                 accountServiceClient.createAccount(accountReq);
             } catch (Exception ex) {
-                // Optionally log or handle account creation failure
                 model.addAttribute("warning", "User registered but account creation failed. Please contact support.");
             }
             return "redirect:/login";
         } else {
-            // Handle circuit breaker open state with special message
-            if (response.containsKey("circuitBreakerOpen") && (Boolean) response.get("circuitBreakerOpen")) {
-                model.addAttribute("error", "🔴 " + response.get("error"));
-                model.addAttribute("circuitBreakerError", true);
-            } else {
-                model.addAttribute("error", response.getOrDefault("error", "Registration failed"));
-            }
+            model.addAttribute("error", response.getOrDefault("error", "Registration failed"));
             return "register";
         }
     }
+
 
     // Circuit breaker monitoring endpoint for user service
     @GetMapping("/user-service/circuit-breaker/status")
