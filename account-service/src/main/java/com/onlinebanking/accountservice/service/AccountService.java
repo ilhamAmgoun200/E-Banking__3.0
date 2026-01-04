@@ -19,8 +19,26 @@ public class AccountService {
     }
 
     public Account createAccount(Account account) {
+        // Gestion du rôle
+        if (account.getRole() == null || account.getRole().isEmpty()) {
+            account.setRole("CLIENT");
+        } else {
+            String r = account.getRole().toUpperCase();
+            if (!r.equals("ADMIN") && !r.equals("AGENT") && !r.equals("CLIENT")) {
+                account.setRole("CLIENT");
+            } else {
+                account.setRole(r);
+            }
+        }
+
+        // Gestion du statut
+        if (account.getStatus() == null || account.getStatus().isEmpty()) {
+            account.setStatus("ACTIVE");
+        }
+
         return accountRepository.save(account);
     }
+
 
     public Account getAccountById(Long id) {
         return accountRepository.findById(id).orElse(null);

@@ -76,39 +76,61 @@ public class UserServiceClientWithCircuitBreaker {
             return fallbackResponse;
         }
     }
-    
+
     public Map<String, Object> register(Map<String, String> registerRequest) {
         Supplier<Map<String, Object>> registerCall = () -> {
             try {
+                // ✅ AJOUTEZ DES LOGS
+                System.out.println("===== CALLING USER-SERVICE REGISTER =====");
+                System.out.println("URL: " + USER_SERVICE_BASE_URL + "/api/register");
+                System.out.println("Request: " + registerRequest);
+
                 HttpHeaders headers = new HttpHeaders();
                 headers.setContentType(MediaType.APPLICATION_JSON);
                 HttpEntity<Map<String, String>> entity = new HttpEntity<>(registerRequest, headers);
-                
+
                 ResponseEntity<Map> response = restTemplate.postForEntity(
-                    USER_SERVICE_BASE_URL + "/api/register", 
-                    entity, 
-                    Map.class
+                        USER_SERVICE_BASE_URL + "/api/register",
+                        entity,
+                        Map.class
                 );
-                
+
+                System.out.println("Response status: " + response.getStatusCode());
+                System.out.println("Response body: " + response.getBody());
+
                 return response.getBody();
             } catch (HttpClientErrorException e) {
-                // Handle 4xx errors (like user already exists)
+                // ✅ LOGGEZ L'ERREUR RÉELLE
+                System.out.println("❌ HTTP Error: " + e.getStatusCode());
+                System.out.println("❌ Response body: " + e.getResponseBodyAsString());
+
                 Map<String, Object> errorResponse = new HashMap<>();
-                if (e.getStatusCode().value() == 409) {
-                    errorResponse.put("error", "Username already exists");
-                } else {
-                    errorResponse.put("error", "Registration failed: " + e.getStatusText());
+
+                // ✅ RETOURNEZ LE VRAI MESSAGE D'ERREUR DU BACKEND
+                try {
+                    // Essayer de parser la réponse d'erreur du backend
+                    String responseBody = e.getResponseBodyAsString();
+                    if (responseBody != null && !responseBody.isEmpty()) {
+                        errorResponse.put("error", responseBody);
+                    } else if (e.getStatusCode().value() == 409) {
+                        errorResponse.put("error", "Username already exists");
+                    } else {
+                        errorResponse.put("error", "Registration failed: " + e.getStatusText());
+                    }
+                } catch (Exception ex) {
+                    errorResponse.put("error", "Registration failed: " + e.getMessage());
                 }
+
                 return errorResponse;
             } catch (ResourceAccessException e) {
-                // Service is down - this will trigger circuit breaker
+                // ✅ LOGGEZ SI LE SERVICE EST DOWN
+                System.out.println("❌ User service is DOWN: " + e.getMessage());
                 throw new RuntimeException("User service is unavailable", e);
             }
         };
-        
+
         return userServiceCircuitBreaker.executeSupplier(registerCall);
     }
-    
     public Map<String, Object> registerWithFallback(Map<String, String> registerRequest) {
         try {
             return register(registerRequest);
