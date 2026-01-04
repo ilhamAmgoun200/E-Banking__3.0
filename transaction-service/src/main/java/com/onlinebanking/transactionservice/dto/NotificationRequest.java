@@ -5,6 +5,7 @@ public class NotificationRequest {
     private String phoneNumber;
     private String message;
 
+    // Getters and setters
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
 

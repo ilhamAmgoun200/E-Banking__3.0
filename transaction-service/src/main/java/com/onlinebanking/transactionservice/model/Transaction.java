@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 
 @Entity
 public class Transaction {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,12 +21,17 @@ public class Transaction {
     private String transferId;
     private String description;
 
+    // ✅ NEW FIELDS
     @Column(nullable = true)
     private String status = "SUCCESS";
 
     @Column(nullable = true)
     private String fraudReason;
 
+<<<<<<< Updated upstream
+=======
+    // Getters and setters
+>>>>>>> Stashed changes
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getAccountNumber() { return accountNumber; }
@@ -48,6 +52,8 @@ public class Transaction {
     public void setTransferId(String transferId) { this.transferId = transferId; }
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+
+    // ✅ NEW GETTERS & SETTERS
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
     public String getFraudReason() { return fraudReason; }

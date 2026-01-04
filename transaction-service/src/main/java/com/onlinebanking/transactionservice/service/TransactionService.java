@@ -24,6 +24,7 @@ public class TransactionService {
         this.transactionRepository = transactionRepository;
     }
 
+    // ---------------- Basic CRUD ----------------
     public List<Transaction> getAllTransactions() {
         return transactionRepository.findAll();
     }
@@ -62,7 +63,7 @@ public class TransactionService {
         try {
             restTemplate.postForObject(notificationServiceUrl, req, Void.class);
         } catch (Exception e) {
-            System.out.println(" Notification failed to send: " + e.getMessage());
+            System.out.println("❌ Failed to send notification: " + e.getMessage());
         }
     }
 
@@ -78,7 +79,7 @@ public class TransactionService {
 
         if (amount != null && amount > 10000) { // Example rule
             isFraud = true;
-            fraudReason = "Transaction exceeds the limmit 10,000 ";
+            fraudReason = "Transaction exceeds 10,000 limit";
         }
 
         // -------- Create outgoing transaction --------
@@ -142,7 +143,7 @@ public class TransactionService {
         return List.of(savedOutgoing, savedIncoming);
     }
 
-
+    // -------- Placeholder methods to fetch user info --------
     private String getUserEmailByUsername(String username) {
         // TODO: Replace with REST call to user-service
         return username + "@gmail.com";

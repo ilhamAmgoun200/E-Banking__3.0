@@ -17,24 +17,22 @@ public class NotificationService {
     @Autowired
     private JavaMailSender mailSender;
 
-    // ---------------- Twilio credentials ----------------
-    private final String TWILIO_SID = "AC3ae7f397a77a0350ff74987ab481c04b";
-    private final String TWILIO_AUTH_TOKEN = "ca71bfb3abe176206de34f46466a77a9";
-    private final String TWILIO_NUMBER = "+17756288872";
+    // ---------------- Twilio credentials from environment variables ----------------
+    private final String TWILIO_SID = System.getenv("TWILIO_SID");
+    private final String TWILIO_AUTH_TOKEN = System.getenv("TWILIO_AUTH_TOKEN");
+    private final String TWILIO_NUMBER = System.getenv("TWILIO_NUMBER");
 
-    // ---------------- Main notification method ----------------
     public void sendNotification(NotificationRequest request) {
 
         String email = request.getEmail();
         String phoneNumber = request.getPhoneNumber();
         String messageText = request.getMessage();
 
-        // -------- Normalize Moroccan number to E.164 --------
         if (phoneNumber != null && phoneNumber.startsWith("0")) {
             phoneNumber = "+212" + phoneNumber.substring(1);
         }
 
-        // -------- Send email --------
+        // Send email
         try {
             SimpleMailMessage emailMessage = new SimpleMailMessage();
             emailMessage.setTo(email);
@@ -47,12 +45,12 @@ public class NotificationService {
             System.out.println("❌ Failed to send email: " + e.getMessage());
         }
 
-        // -------- Send SMS via Twilio --------
+        // Send SMS via Twilio
         try {
             Twilio.init(TWILIO_SID, TWILIO_AUTH_TOKEN);
             Message.creator(
-                    new PhoneNumber(phoneNumber),      // to
-                    new PhoneNumber(TWILIO_NUMBER),   // from (Twilio number)
+                    new PhoneNumber(phoneNumber),
+                    new PhoneNumber(TWILIO_NUMBER),
                     messageText
             ).create();
 

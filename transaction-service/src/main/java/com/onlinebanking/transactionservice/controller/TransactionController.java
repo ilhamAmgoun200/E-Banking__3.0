@@ -33,12 +33,12 @@ public class TransactionController {
     public List<Transaction> getTransactionsByAccountNumber(@PathVariable String accountNumber) {
         return transactionService.getTransactionsByAccountNumber(accountNumber);
     }
-    
+
     @GetMapping("/account/{accountNumber}/all")
     public List<Transaction> getAllTransactionsForAccount(@PathVariable String accountNumber) {
         return transactionService.getAllTransactionsForAccount(accountNumber);
     }
-    
+
     @PostMapping("/transfer")
     public List<Transaction> createTransferTransactions(@RequestBody java.util.Map<String, Object> request) {
         String fromAccountNumber = (String) request.get("fromAccountNumber");
@@ -47,8 +47,8 @@ public class TransactionController {
         String fromUsername = (String) request.get("fromUsername");
         String toUsername = (String) request.get("toUsername");
         String description = (String) request.get("description");
-        
-        return transactionService.createTransferTransactions(fromAccountNumber, toAccountNumber, 
-                                                           amount, fromUsername, toUsername, description);
+
+        return transactionService.createTransferTransactions(fromAccountNumber, toAccountNumber,
+                amount, fromUsername, toUsername, description);
     }
 }
