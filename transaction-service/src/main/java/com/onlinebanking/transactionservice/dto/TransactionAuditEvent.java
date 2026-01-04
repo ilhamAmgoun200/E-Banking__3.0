@@ -1,13 +1,10 @@
-package org.example.auditservice.dto;
+package com.onlinebanking.transactionservice.dto;
 
-
-import java.time.Instant;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.Instant;
+import java.util.Map;
 
-public class AuditEvent {
+public class TransactionAuditEvent {
 
     @JsonProperty("eventType")
     private String eventType;
@@ -28,11 +25,25 @@ public class AuditEvent {
     private String status;
 
     @JsonProperty("timestamp")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSX")
     private Instant timestamp;
 
     @JsonProperty("metadata")
     private String metadata;
+
+    // Constructeurs
+    public TransactionAuditEvent() {}
+
+    public TransactionAuditEvent(String eventType, String service, String userId, String action,
+                                 String ipAddress, String status, Instant timestamp, String metadata) {
+        this.eventType = eventType;
+        this.service = service;
+        this.userId = userId;
+        this.action = action;
+        this.ipAddress = ipAddress;
+        this.status = status;
+        this.timestamp = timestamp;
+        this.metadata = metadata;
+    }
 
     // Getters et Setters
     public String getEventType() { return eventType; }
@@ -58,4 +69,18 @@ public class AuditEvent {
 
     public String getMetadata() { return metadata; }
     public void setMetadata(String metadata) { this.metadata = metadata; }
+
+    @Override
+    public String toString() {
+        return "TransactionAuditEvent{" +
+                "eventType='" + eventType + '\'' +
+                ", service='" + service + '\'' +
+                ", userId='" + userId + '\'' +
+                ", action='" + action + '\'' +
+                ", ipAddress='" + ipAddress + '\'' +
+                ", status='" + status + '\'' +
+                ", timestamp=" + timestamp +
+                ", metadata='" + metadata + '\'' +
+                '}';
+    }
 }

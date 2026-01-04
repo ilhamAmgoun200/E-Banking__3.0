@@ -5,30 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3232711-ef55-42d0-8c96-c194ee536cc1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitattributes" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/compact.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/AuditServiceApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/controller/AuditController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/dto/AuditEvent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/entity/AuditLog.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/entity/AuditSpecification.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/repository/AuditLogRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/service/AuditConsumer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/service/AuditService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/example/auditservice/AuditServiceApplicationTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../src/main/java/com/onlinebanking/portal/model/Channel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../src/main/java/com/onlinebanking/portal/model/Notification.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/static/css/chatbot.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/static/css/js/chatbot.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/fragments/chatbot.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/config/JacksonConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../transaction-service/src/main/java/com/onlinebanking/transactionservice/dto/AuditEventType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../transaction-service/src/main/java/com/onlinebanking/transactionservice/dto/TransactionAuditEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../transaction-service/src/main/java/com/onlinebanking/transactionservice/service/AuditProducerService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/auditservice/dto/AuditEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/dto/AuditEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/auditservice/service/AuditConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/service/AuditConsumer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/auditservice/dto/AuditEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/example/auditservice/dto/AuditEvent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/auditservice/service/AuditConsumer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/example/auditservice/service/AuditConsumer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../transaction-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../transaction-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../transaction-service/src/main/java/com/onlinebanking/transactionservice/controller/TransactionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../transaction-service/src/main/java/com/onlinebanking/transactionservice/controller/TransactionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../transaction-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../transaction-service/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,26 +54,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;Spring Boot.AuditServiceApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;audit-service-branch&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Admin/E-Banking__3.0&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Spring Boot.AuditServiceApplication.executor": "Run",
+    "git-widget-placeholder": "audit-service-branch",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Admin/E-Banking__3.0/transaction-service",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="AuditServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="audit-service" />
@@ -113,7 +101,7 @@
       <updated>1767351885338</updated>
       <workItem from="1767351886589" duration="3266000" />
       <workItem from="1767355304869" duration="30924000" />
-      <workItem from="1767535988743" duration="4980000" />
+      <workItem from="1767535988743" duration="10460000" />
     </task>
     <servers />
   </component>
