@@ -142,4 +142,11 @@ public class AccountController {
 
         return ResponseEntity.ok(stats);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {
+        accountService.deleteAccount(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

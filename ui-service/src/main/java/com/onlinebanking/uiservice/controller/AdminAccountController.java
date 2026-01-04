@@ -75,7 +75,6 @@ public class AdminAccountController {
     public String createAccount(@RequestParam String accountNumber,
                                 @RequestParam String accountHolderName,
                                 @RequestParam String username,
-                                @RequestParam String password,
                                 @RequestParam Double balance,
                                 @RequestParam String role,
                                 @RequestParam String status,
@@ -83,10 +82,10 @@ public class AdminAccountController {
                                 @RequestParam(required = false) String phoneNumber,
                                 @RequestParam(required = false) String address,
                                 @RequestParam(required = false) String cin,
-                                RedirectAttributes redirectAttributes) {
-
+                                RedirectAttributes redirectAttributes,
+                                HttpSession session) {
         try {
-            // 1️⃣ Créer le compte
+            // Créer le compte dans account-service
             Map<String, Object> account = new HashMap<>();
             account.put("accountNumber", accountNumber);
             account.put("accountHolderName", accountHolderName);
@@ -97,51 +96,34 @@ public class AdminAccountController {
 
             restTemplate.postForObject(ACCOUNT_SERVICE_URL, account, Map.class);
 
-            // 2️⃣ Créer l'utilisateur (CLIENT / AGENT / ADMIN)
-            try {
-                Map<String, String> userReq = new HashMap<>();
-                userReq.put("username", username);
-                userReq.put("password", password);
-                userReq.put("role", role);
-                userReq.put("status", status);
-
-                if ("CLIENT".equalsIgnoreCase(role)) {
+            // Si c'est un CLIENT, créer aussi l'utilisateur dans user-service avec toutes les infos
+            if ("CLIENT".equalsIgnoreCase(role)) {
+                try {
+                    Map<String, String> userReq = new HashMap<>();
+                    userReq.put("username", username);
+                    userReq.put("password", "default123"); // Mot de passe par défaut
                     userReq.put("accountNumber", accountNumber);
                     userReq.put("firstName", accountHolderName.split(" ")[0]);
-                    userReq.put("lastName",
-                            accountHolderName.contains(" ")
-                                    ? accountHolderName.substring(accountHolderName.indexOf(" ") + 1)
-                                    : "");
+                    userReq.put("lastName", accountHolderName.contains(" ") ? accountHolderName.substring(accountHolderName.indexOf(" ") + 1) : "");
                     userReq.put("email", email != null ? email : "");
                     userReq.put("phoneNumber", phoneNumber != null ? phoneNumber : "");
                     userReq.put("address", address != null ? address : "");
                     userReq.put("cin", cin != null ? cin : "");
-                } else {
-                    // AGENT / ADMIN
-                    userReq.put("firstName", accountHolderName);
-                    userReq.put("lastName", "");
+                    userReq.put("role", role);
+                    userReq.put("status", status);
+
+                    restTemplate.postForObject("http://localhost:8084/api/register", userReq, Map.class);
+                } catch (Exception e) {
+                    System.err.println("Avertissement: Utilisateur non créé dans user-service: " + e.getMessage());
                 }
-
-                restTemplate.postForObject(
-                        "http://localhost:8084/api/register",
-                        userReq,
-                        Map.class
-                );
-
-            } catch (Exception e) {
-                System.err.println("❌ Erreur création utilisateur: " + e.getMessage());
             }
 
-            redirectAttributes.addFlashAttribute(
-                    "message",
-                    "Compte et utilisateur créés avec succès"
-            );
-
+            redirectAttributes.addFlashAttribute("message", "Compte créé avec succès" +
+                    ("CLIENT".equalsIgnoreCase(role) ? " (mot de passe par défaut: default123)" : ""));
         } catch (Exception e) {
-            System.err.println("❌ Erreur création compte: " + e.getMessage());
+            System.err.println("Erreur création: " + e.getMessage());
             redirectAttributes.addFlashAttribute("error", "Erreur: " + e.getMessage());
         }
-
         return "redirect:/admin/accounts";
     }
 

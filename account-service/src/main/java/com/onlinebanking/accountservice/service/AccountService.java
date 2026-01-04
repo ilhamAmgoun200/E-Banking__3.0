@@ -89,4 +89,8 @@ public class AccountService {
         Account account = accountRepository.findByAccountNumber(accountNumber);
         return account != null;
     }
+    public void deleteAccount(Long id) {
+        accountRepository.deleteById(id);
+    }
+
 }
