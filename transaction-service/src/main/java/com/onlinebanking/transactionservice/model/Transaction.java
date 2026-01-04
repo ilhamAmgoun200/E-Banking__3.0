@@ -28,20 +28,6 @@ public class Transaction {
     @Column(nullable = true)
     private String fraudReason;
 
-    // Required by JPA
-    public Transaction() {
-    }
-
-    // Optional constructor
-    public Transaction(String accountNumber, Double amount, String type,
-                       LocalDateTime timestamp, String username) {
-        this.accountNumber = accountNumber;
-        this.amount = amount;
-        this.type = type;
-        this.timestamp = timestamp;
-        this.username = username;
-    }
-
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getAccountNumber() { return accountNumber; }
