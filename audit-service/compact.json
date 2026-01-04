@@ -1,0 +1,1 @@
+{"eventType":"USER_LOGIN","service":"auth-service","userId":"test123","action":"LOGIN_SUCCESS","ipAddress":"192.168.1.100","status":"SUCCESS","timestamp":"2024-01-15T10:30:00Z","metadata":"{\"browser\":\"Chrome\"}"}
