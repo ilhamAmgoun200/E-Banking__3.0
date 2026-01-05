@@ -5,30 +5,72 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3232711-ef55-42d0-8c96-c194ee536cc1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitattributes" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/compact.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mvnw" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/mvnw.cmd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/AuditServiceApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/controller/AuditController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/dto/AuditEvent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/entity/AuditLog.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/entity/AuditSpecification.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/repository/AuditLogRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/service/AuditConsumer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/service/AuditService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/test/java/org/example/auditservice/AuditServiceApplicationTests.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../src/main/java/com/onlinebanking/portal/model/Channel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../src/main/java/com/onlinebanking/portal/model/Notification.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/static/css/chatbot.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/static/css/js/chatbot.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/fragments/chatbot.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ai-assistant-service/src/main/java/org/example/aiassistantservice/config/CorsConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/config/CorsConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/config/JacksonConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../et --hard ae45f50" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../notification-service/.gitattributes" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../notification-service/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../notification-service/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../notification-service/mvnw" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../notification-service/mvnw.cmd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../notification-service/pom.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../notification-service/src/main/java/com/example/notificationservice/NotificationServiceApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../notification-service/src/main/java/com/example/notificationservice/controller/NotificationController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../notification-service/src/main/java/com/example/notificationservice/dto/NotificationRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../notification-service/src/main/java/com/example/notificationservice/service/NotificationService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../notification-service/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../notification-service/src/test/java/com/example/notificationservice/NotificationServiceApplicationTests.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../transaction-service/src/main/java/com/onlinebanking/transactionservice/config/AppConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../transaction-service/src/main/java/com/onlinebanking/transactionservice/dto/AuditEventType.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../transaction-service/src/main/java/com/onlinebanking/transactionservice/dto/NotificationRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../transaction-service/src/main/java/com/onlinebanking/transactionservice/dto/TransactionAuditEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../transaction-service/src/main/java/com/onlinebanking/transactionservice/fraud/FraudService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../transaction-service/src/main/java/com/onlinebanking/transactionservice/service/AuditProducerService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ui-service/src/main/java/com/onlinebanking/uiservice/controller/AdminAccountController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ui-service/src/main/java/com/onlinebanking/uiservice/controller/AdminUserController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ui-service/src/main/java/com/onlinebanking/uiservice/controller/AgentAccountController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ui-service/src/main/java/com/onlinebanking/uiservice/controller/AuditViewController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/static/css/chat-widget.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/admin-accounts.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/admin-audit.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/admin-user-details.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/admin-users.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/agent-accounts.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/chat-widget.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../account-service/src/main/java/com/onlinebanking/accountservice/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../account-service/src/main/java/com/onlinebanking/accountservice/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../account-service/src/main/java/com/onlinebanking/accountservice/controller/AccountController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../account-service/src/main/java/com/onlinebanking/accountservice/controller/AccountController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../account-service/src/main/java/com/onlinebanking/accountservice/model/Account.java" beforeDir="false" afterPath="$PROJECT_DIR$/../account-service/src/main/java/com/onlinebanking/accountservice/model/Account.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../account-service/src/main/java/com/onlinebanking/accountservice/service/AccountService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../account-service/src/main/java/com/onlinebanking/accountservice/service/AccountService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/auditservice/controller/AuditController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/controller/AuditController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/auditservice/dto/AuditEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/dto/AuditEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/auditservice/service/AuditConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/service/AuditConsumer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/auditservice/controller/AuditController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/example/auditservice/controller/AuditController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/auditservice/dto/AuditEvent.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/example/auditservice/dto/AuditEvent.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/auditservice/service/AuditConsumer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/example/auditservice/service/AuditConsumer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../transaction-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../transaction-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../transaction-service/src/main/java/com/onlinebanking/transactionservice/controller/TransactionController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../transaction-service/src/main/java/com/onlinebanking/transactionservice/controller/TransactionController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../transaction-service/src/main/java/com/onlinebanking/transactionservice/model/Transaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/../transaction-service/src/main/java/com/onlinebanking/transactionservice/model/Transaction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../transaction-service/src/main/java/com/onlinebanking/transactionservice/service/TransactionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../transaction-service/src/main/java/com/onlinebanking/transactionservice/service/TransactionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../transaction-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../transaction-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/java/com/onlinebanking/uiservice/controller/AccountController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/java/com/onlinebanking/uiservice/controller/AccountController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/java/com/onlinebanking/uiservice/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/java/com/onlinebanking/uiservice/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/java/com/onlinebanking/uiservice/service/AccountServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/java/com/onlinebanking/uiservice/service/AccountServiceClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/java/com/onlinebanking/uiservice/service/UserServiceClientWithCircuitBreaker.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/java/com/onlinebanking/uiservice/service/UserServiceClientWithCircuitBreaker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/resources/static/css/chatbot.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/resources/static/css/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/static/css/style.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/accounts.html" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/accounts.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/register.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/transactions.html" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/transactions.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../user-service/src/main/java/com/onlinebanking/userservice/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../user-service/src/main/java/com/onlinebanking/userservice/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../user-service/src/main/java/com/onlinebanking/userservice/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/../user-service/src/main/java/com/onlinebanking/userservice/model/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../user-service/src/main/java/com/onlinebanking/userservice/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../user-service/src/main/java/com/onlinebanking/userservice/service/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,7 +119,7 @@
     &quot;git-widget-placeholder&quot;: &quot;audit-service-branch&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Admin/E-Banking__3.0&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Admin/E-Banking__3.0/transaction-service&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -113,7 +155,8 @@
       <updated>1767351885338</updated>
       <workItem from="1767351886589" duration="3266000" />
       <workItem from="1767355304869" duration="30924000" />
-      <workItem from="1767535988743" duration="4980000" />
+      <workItem from="1767535988743" duration="12714000" />
+      <workItem from="1767613085148" duration="6483000" />
     </task>
     <servers />
   </component>

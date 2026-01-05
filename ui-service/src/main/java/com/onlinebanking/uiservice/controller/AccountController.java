@@ -30,10 +30,10 @@ import java.time.LocalDateTime;
 public class AccountController {
     @Autowired
     private RestTemplate restTemplate;
-    
+
     @Autowired
     private AccountServiceClientWithCircuitBreaker accountServiceClient;
-    
+
     @Autowired
     private TransactionServiceClient transactionServiceClient;
 
@@ -43,16 +43,16 @@ public class AccountController {
         if (username == null || username.isEmpty()) {
             return "redirect:/login";
         }
-        
+
         try {
             // Use circuit breaker service to fetch accounts
             List<Map<String, Object>> accounts = accountServiceClient.getAccountsByUsername(username);
-            
+
             // Handle null response
             if (accounts == null) {
                 accounts = new ArrayList<>();
             }
-            
+
             model.addAttribute("accounts", accounts);
         } catch (io.github.resilience4j.circuitbreaker.CallNotPermittedException e) {
             // Circuit breaker is open
@@ -70,7 +70,7 @@ public class AccountController {
                 model.addAttribute("error", "Account service is currently unavailable. Error: " + e.getMessage());
             }
         }
-        
+
         return "accounts";
     }
 
@@ -79,7 +79,7 @@ public class AccountController {
     @ResponseBody
     public ResponseEntity<String> testServices() {
         StringBuilder result = new StringBuilder();
-        
+
         try {
             // Test Account Service
             String accountUrl = "http://localhost:8081/accounts";
@@ -88,7 +88,7 @@ public class AccountController {
         } catch (Exception e) {
             result.append("❌ Account Service (8081): " + e.getMessage() + "\n");
         }
-        
+
         try {
             // Test Transaction Service
             String transactionUrl = "http://localhost:8082/transactions";
@@ -97,7 +97,7 @@ public class AccountController {
         } catch (Exception e) {
             result.append("❌ Transaction Service (8082): " + e.getMessage() + "\n");
         }
-        
+
         return ResponseEntity.ok(result.toString());
     }
 
@@ -105,15 +105,15 @@ public class AccountController {
     @GetMapping("/debug-transactions")
     @ResponseBody
     public ResponseEntity<String> debugTransactions(@RequestParam(required = false) String username,
-                                                   @RequestParam(required = false) String accountNumber) {
+                                                    @RequestParam(required = false) String accountNumber) {
         StringBuilder result = new StringBuilder();
         result.append("=== TRANSACTION DEBUG ENDPOINT ===\n\n");
-        
+
         if (username == null) username = "testuser"; // default for testing
-        
+
         result.append("Testing with username: ").append(username).append("\n");
         result.append("Testing with accountNumber: ").append(accountNumber != null ? accountNumber : "ALL").append("\n\n");
-        
+
         try {
             if (accountNumber != null && !accountNumber.isEmpty()) {
                 String url = "http://localhost:8082/transactions/account/" + accountNumber;
@@ -136,30 +136,30 @@ public class AccountController {
             result.append("ERROR: ").append(e.getMessage()).append("\n");
             result.append("Exception type: ").append(e.getClass().getSimpleName()).append("\n");
         }
-        
+
         return ResponseEntity.ok(result.toString());
     }
 
     @GetMapping("/transactions")
-    public String transactions(Model model, 
-                             @SessionAttribute(value = "username", required = false) String username,
-                             @RequestParam(required = false) String accountNumber,
-                             HttpSession session) {
-        
+    public String transactions(Model model,
+                               @SessionAttribute(value = "username", required = false) String username,
+                               @RequestParam(required = false) String accountNumber,
+                               HttpSession session) {
+
         // Debug logging
         System.out.println("=== TRANSACTIONS DEBUG ===");
         System.out.println("Username from session: " + username);
         System.out.println("Account number parameter: " + accountNumber);
-        
+
         // Check if user is logged in
         if (username == null || username.isEmpty()) {
             System.out.println("No username in session, redirecting to login");
             return "redirect:/login";
         }
-        
+
         List<Map<String, Object>> transactions = null;
         String serviceUrl = "";
-        
+
         try {
             if (accountNumber != null && !accountNumber.isEmpty()) {
                 // Fetch transactions for a specific account using circuit breaker
@@ -170,15 +170,15 @@ public class AccountController {
                 System.out.println("Fetching all transactions for user: " + username);
                 transactions = transactionServiceClient.getTransactionsByUsername(username);
             }
-            
+
             System.out.println("Transactions received: " + (transactions != null ? transactions.size() : "null"));
-            
+
             // Handle null response
             if (transactions == null) {
                 transactions = new ArrayList<>();
                 System.out.println("Null response from service, using empty list");
             }
-            
+
         } catch (org.springframework.web.client.ResourceAccessException e) {
             // Service unavailable
             System.err.println("Transaction service unavailable: " + e.getMessage());
@@ -204,9 +204,9 @@ public class AccountController {
             transactions = new ArrayList<>();
             model.addAttribute("error", "Unexpected error occurred: " + e.getMessage() + ". Service URL: " + serviceUrl);
         }
-        
+
         System.out.println("Final transactions count: " + transactions.size());
-        
+
         model.addAttribute("transactions", transactions);
         model.addAttribute("selectedAccountNumber", accountNumber);
         return "transactions";
@@ -214,18 +214,18 @@ public class AccountController {
 
     @PostMapping("/deposit")
     @ResponseBody
-    public ResponseEntity<String> deposit(@RequestParam String accountNumber, 
-                                        @RequestParam Double amount,
-                                        @SessionAttribute(value = "username", required = false) String username) {
+    public ResponseEntity<String> deposit(@RequestParam String accountNumber,
+                                          @RequestParam Double amount,
+                                          @SessionAttribute(value = "username", required = false) String username) {
         // Check if user is logged in
         if (username == null || username.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Please log in first");
         }
-        
+
         try {
             // Call account service to deposit money using circuit breaker
             Map<String, Object> accountResponse = accountServiceClient.deposit(accountNumber, amount);
-            
+
             if (accountResponse != null && !accountResponse.containsKey("error")) {
                 // Create transaction record using circuit breaker
                 Map<String, Object> transaction = new HashMap<>();
@@ -234,7 +234,7 @@ public class AccountController {
                 transaction.put("type", "DEPOSIT");
                 transaction.put("timestamp", LocalDateTime.now());
                 transaction.put("username", username);
-                
+
                 try {
                     Map<String, Object> transactionResponse = transactionServiceClient.createTransaction(transaction);
                     return ResponseEntity.ok("Deposit successful");
@@ -251,18 +251,18 @@ public class AccountController {
 
     @PostMapping("/withdraw")
     @ResponseBody
-    public ResponseEntity<String> withdraw(@RequestParam String accountNumber, 
-                                         @RequestParam Double amount,
-                                         @SessionAttribute(value = "username", required = false) String username) {
+    public ResponseEntity<String> withdraw(@RequestParam String accountNumber,
+                                           @RequestParam Double amount,
+                                           @SessionAttribute(value = "username", required = false) String username) {
         // Check if user is logged in
         if (username == null || username.isEmpty()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Please log in first");
         }
-        
+
         try {
             // Call account service to withdraw money using circuit breaker
             Map<String, Object> accountResponse = accountServiceClient.withdraw(accountNumber, amount);
-            
+
             if (accountResponse != null && !accountResponse.containsKey("error")) {
                 // Create transaction record using circuit breaker
                 Map<String, Object> transaction = new HashMap<>();
@@ -271,7 +271,7 @@ public class AccountController {
                 transaction.put("type", "WITHDRAWAL");
                 transaction.put("timestamp", LocalDateTime.now());
                 transaction.put("username", username);
-                
+
                 try {
                     Map<String, Object> transactionResponse = transactionServiceClient.createTransaction(transaction);
                     return ResponseEntity.ok("Withdrawal successful");
@@ -289,28 +289,28 @@ public class AccountController {
     @PostMapping("/transfer")
     @ResponseBody
     public ResponseEntity<String> transfer(@RequestParam String accountNumber,
-                          @RequestParam String toAccountNumber,
-                          @RequestParam Double amount,
-                          @RequestParam(required = false) String description,
-                          HttpSession session) {
+                                           @RequestParam String toAccountNumber,
+                                           @RequestParam Double amount,
+                                           @RequestParam(required = false) String description,
+                                           HttpSession session) {
         try {
             // Get current user from session
             String username = (String) session.getAttribute("username");
             if (username == null) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Please log in first");
             }
-            
+
             // Validate amount
             if (amount == null || amount <= 0) {
                 return ResponseEntity.badRequest().body("Transfer amount must be greater than zero");
             }
-            
+
             // Check if destination account exists
             Boolean toAccountExists = accountServiceClient.checkAccountExists(toAccountNumber);
             if (toAccountExists == null || !toAccountExists) {
                 return ResponseEntity.badRequest().body("Destination account " + toAccountNumber + " not found in database");
             }
-            
+
             // Get destination account details to get username
             List<Map<String, Object>> allAccounts = accountServiceClient.getAllAccounts();
             String toUsername = null;
@@ -320,35 +320,35 @@ public class AccountController {
                     break;
                 }
             }
-            
+
             if (toUsername == null) {
                 return ResponseEntity.badRequest().body("Unable to identify destination account owner");
             }
-            
+
             // Perform the transfer
             Map<String, Object> transferResult = accountServiceClient.transfer(accountNumber, toAccountNumber, amount);
-            
+
             if (transferResult != null && transferResult.containsKey("error")) {
                 return ResponseEntity.badRequest().body(transferResult.get("error").toString());
             }
-            
+
             // Create transfer transactions in transaction service
             try {
                 List<Map<String, Object>> transactionResult = transactionServiceClient.createTransferTransactions(
-                    accountNumber, toAccountNumber, amount, username, toUsername, description != null ? description : ""
+                        accountNumber, toAccountNumber, amount, username, toUsername, description != null ? description : ""
                 );
-                
-                if (transactionResult != null && !transactionResult.isEmpty() && 
-                    transactionResult.get(0).containsKey("error")) {
+
+                if (transactionResult != null && !transactionResult.isEmpty() &&
+                        transactionResult.get(0).containsKey("error")) {
                     System.err.println("Failed to log transfer transactions: " + transactionResult.get(0).get("error"));
                 }
             } catch (Exception e) {
                 System.err.println("Failed to log transfer transactions: " + e.getMessage());
                 // Don't fail the transfer if logging fails
             }
-            
+
             return ResponseEntity.ok("Transfer of $" + amount + " to account " + toAccountNumber + " successful!");
-            
+
         } catch (Exception e) {
             System.err.println("Transfer error: " + e.getMessage());
             return ResponseEntity.badRequest().body("Transfer failed: " + e.getMessage());

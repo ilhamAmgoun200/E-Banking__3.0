@@ -1,3 +1,4 @@
+org\example\auditservice\config\CorsConfig.class
 org\example\auditservice\entity\AuditLog.class
 org\example\auditservice\AuditServiceApplication.class
 org\example\auditservice\controller\AuditController.class

@@ -108,4 +108,45 @@ public class AccountController {
         boolean exists = accountService.accountExists(accountNumber);
         return ResponseEntity.ok(exists);
     }
+
+    @GetMapping("/stats")
+    public ResponseEntity<Map<String, Long>> getAccountStatistics() {
+        List<Account> allAccounts = accountService.getAllAccounts();
+
+        long totalClients = allAccounts.stream()
+                .filter(a -> "CLIENT".equalsIgnoreCase(a.getRole()))
+                .count();
+
+        long totalAgents = allAccounts.stream()
+                .filter(a -> "AGENT".equalsIgnoreCase(a.getRole()))
+                .count();
+
+        long totalAdmins = allAccounts.stream()
+                .filter(a -> "ADMIN".equalsIgnoreCase(a.getRole()))
+                .count();
+
+        long totalActive = allAccounts.stream()
+                .filter(a -> a.getStatus() != null && "ACTIVE".equalsIgnoreCase(a.getStatus()))
+                .count();
+
+        long totalInactive = allAccounts.stream()
+                .filter(a -> a.getStatus() != null && "INACTIVE".equalsIgnoreCase(a.getStatus()))
+                .count();
+
+        Map<String, Long> stats = new java.util.HashMap<>();
+        stats.put("totalClients", totalClients);
+        stats.put("totalAgents", totalAgents);
+        stats.put("totalAdmins", totalAdmins);
+        stats.put("totalActive", totalActive);
+        stats.put("totalInactive", totalInactive);
+
+        return ResponseEntity.ok(stats);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAccount(@PathVariable Long id) {
+        accountService.deleteAccount(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

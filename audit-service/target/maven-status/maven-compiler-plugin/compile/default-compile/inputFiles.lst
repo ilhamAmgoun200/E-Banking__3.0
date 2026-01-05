@@ -1,4 +1,6 @@
 C:\Users\Admin\E-Banking__3.0\audit-service\src\main\java\org\example\auditservice\AuditServiceApplication.java
+C:\Users\Admin\E-Banking__3.0\audit-service\src\main\java\org\example\auditservice\config\CorsConfig.java
+C:\Users\Admin\E-Banking__3.0\audit-service\src\main\java\org\example\auditservice\config\JacksonConfig.java
 C:\Users\Admin\E-Banking__3.0\audit-service\src\main\java\org\example\auditservice\controller\AuditController.java
 C:\Users\Admin\E-Banking__3.0\audit-service\src\main\java\org\example\auditservice\dto\AuditEvent.java
 C:\Users\Admin\E-Banking__3.0\audit-service\src\main\java\org\example\auditservice\entity\AuditLog.java

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat Widget</title>
+    <!-- Link to external CSS -->
+    <link rel="stylesheet" th:href="@{/css/chat-widget.css}" />
+</head>
+<body>
+<div th:fragment="chat-widget">
+    <div id="chatWidget">
+        <!-- Chat Button with improved visibility -->
+        <button id="chatButton" class="chat-button" onclick="toggleChat()"
+                title="Chat with AI Assistant">
+            <span id="chatIcon">🤖</span>
+            <span id="chatLabel" style="display: none; font-weight: 500;">AI Assistant</span>
+            <div id="notificationBadge" class="notification-badge" style="display: none;">!</div>
+        </button>
+
+        <!-- Chat Window -->
+        <div id="chatPopup" class="chat-popup">
+            <div class="chat-header">
+                <div>
+                    <h3 style="margin: 0 0 5px 0; font-size: 1.3rem;">🤖 AI Banking Assistant</h3>
+                    <small style="opacity: 0.9; font-size: 0.9rem;">Ask me anything about banking</small>
+                </div>
+                <button class="close-btn" onclick="toggleChat()" title="Close chat">×</button>
+            </div>
+            <div id="chatMessages" class="chat-messages"></div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" class="chat-input-field"
+                       placeholder="Type your question here..."
+                       onkeypress="handleChatKeyPress(event)">
+                <button onclick="sendChatMessage()" class="send-btn">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        let isChatOpen = false;
+        let messageCount = 0;
+        let isTyping = false;
+        let isDragging = false;
+        let dragOffset = { x: 0, y: 0 };
+
+        // Load saved position
+        window.addEventListener('load', function() {
+            const chatWidget = document.getElementById('chatWidget');
+            const chatButton = document.getElementById('chatButton');
+            const savedPos = localStorage.getItem('chatWidgetPosition');
+
+            if (savedPos) {
+                const pos = JSON.parse(savedPos);
+                chatWidget.style.position = 'fixed';
+                chatWidget.style.left = pos.left;
+                chatWidget.style.top = pos.top;
+                chatWidget.style.bottom = 'auto';
+                chatWidget.style.right = 'auto';
+            }
+
+            // Add drag functionality
+            chatButton.addEventListener('mousedown', startDrag);
+            chatButton.addEventListener('touchstart', startDragTouch);
+        });
+
+        function startDrag(e) {
+            e.preventDefault();
+            const chatWidget = document.getElementById('chatWidget');
+            const chatButton = document.getElementById('chatButton');
+
+            isDragging = true;
+            chatButton.classList.add('dragging');
+            dragOffset.x = e.clientX - chatWidget.offsetLeft;
+            dragOffset.y = e.clientY - chatWidget.offsetTop;
+
+            document.addEventListener('mousemove', onDrag);
+            document.addEventListener('mouseup', stopDrag);
+        }
+
+        function startDragTouch(e) {
+            e.preventDefault();
+            if (e.touches.length === 1) {
+                const chatWidget = document.getElementById('chatWidget');
+                const chatButton = document.getElementById('chatButton');
+
+                isDragging = true;
+                chatButton.classList.add('dragging');
+                const touch = e.touches[0];
+                dragOffset.x = touch.clientX - chatWidget.offsetLeft;
+                dragOffset.y = touch.clientY - chatWidget.offsetTop;
+
+                document.addEventListener('touchmove', onDragTouch);
+                document.addEventListener('touchend', stopDrag);
+            }
+        }
+
+        function onDrag(e) {
+            if (!isDragging) return;
+            const chatWidget = document.getElementById('chatWidget');
+
+            chatWidget.style.position = 'fixed';
+            chatWidget.style.left = (e.clientX - dragOffset.x) + 'px';
+            chatWidget.style.top = (e.clientY - dragOffset.y) + 'px';
+            chatWidget.style.bottom = 'auto';
+            chatWidget.style.right = 'auto';
+        }
+
+        function onDragTouch(e) {
+            if (!isDragging || e.touches.length !== 1) return;
+            const chatWidget = document.getElementById('chatWidget');
+            const touch = e.touches[0];
+
+            chatWidget.style.position = 'fixed';
+            chatWidget.style.left = (touch.clientX - dragOffset.x) + 'px';
+            chatWidget.style.top = (touch.clientY - dragOffset.y) + 'px';
+            chatWidget.style.bottom = 'auto';
+            chatWidget.style.right = 'auto';
+        }
+
+        function stopDrag() {
+            isDragging = false;
+            const chatButton = document.getElementById('chatButton');
+            const chatWidget = document.getElementById('chatWidget');
+
+            chatButton.classList.remove('dragging');
+            document.removeEventListener('mousemove', onDrag);
+            document.removeEventListener('touchmove', onDragTouch);
+            document.removeEventListener('mouseup', stopDrag);
+            document.removeEventListener('touchend', stopDrag);
+
+            // Save position to localStorage
+            localStorage.setItem('chatWidgetPosition', JSON.stringify({
+                left: chatWidget.style.left,
+                top: chatWidget.style.top
+            }));
+        }
+
+        function toggleChat() {
+            const popup = document.getElementById('chatPopup');
+            const button = document.getElementById('chatButton');
+            const icon = document.getElementById('chatIcon');
+            const label = document.getElementById('chatLabel');
+            const badge = document.getElementById('notificationBadge');
+
+            isChatOpen = !isChatOpen;
+
+            if (isChatOpen) {
+                popup.classList.add('active');
+                button.style.borderRadius = '25px';
+                button.style.padding = '18px 25px';
+                label.style.display = 'inline';
+                icon.textContent = '💬';
+                if (badge) badge.style.display = 'none';
+                addWelcomeMessage();
+                setTimeout(() => document.getElementById('chatInput').focus(), 300);
+            } else {
+                popup.classList.remove('active');
+                button.style.borderRadius = '25px';
+                button.style.padding = '18px 25px';
+                label.style.display = 'none';
+                icon.textContent = '🤖';
+            }
+        }
+
+        function showTypingIndicator() {
+            if (isTyping) return;
+            isTyping = true;
+            const messagesDiv = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.id = 'typingIndicator';
+            for (let i = 0; i < 3; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'typing-dot';
+                typingDiv.appendChild(dot);
+            }
+            messagesDiv.appendChild(typingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            isTyping = false;
+            const typingDiv = document.getElementById('typingIndicator');
+            if (typingDiv) {
+                typingDiv.remove();
+            }
+        }
+
+        function addWelcomeMessage() {
+            const messagesDiv = document.getElementById('chatMessages');
+            if (messagesDiv.children.length === 0) {
+                addMessage("Hello! I'm your SecureBank AI Assistant. I can help you with:\n\n• Account balances\n• Transaction history\n• Banking services\n• Financial advice\n\nHow can I assist you today?", false);
+            }
+        }
+
+        function addMessage(text, isUser) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'ai-message'}`;
+            messageDiv.textContent = text;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            // Show notification badge if chat is closed
+            if (!isChatOpen && isUser) {
+                const badge = document.getElementById('notificationBadge');
+                if (badge) {
+                    badge.style.display = 'flex';
+                    messageCount++;
+                    badge.textContent = messageCount > 9 ? '9+' : messageCount;
+                }
+            }
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            addMessage(message, true);
+            input.value = '';
+
+            showTypingIndicator();
+
+            try {
+                const response = await fetch('http://localhost:8095/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: message })
+                });
+
+                const data = await response.json();
+
+                setTimeout(() => {
+                    hideTypingIndicator();
+                    addMessage(data.answer, false);
+                }, 1000);
+
+            } catch (error) {
+                console.error('Error:', error);
+                hideTypingIndicator();
+                addMessage("I apologize, but I'm having trouble connecting to the AI service. Please try again in a moment.", false);
+            }
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendChatMessage();
+            }
+        }
+
+        document.addEventListener('click', function(event) {
+            const chatWidget = document.getElementById('chatWidget');
+            const chatButton = document.getElementById('chatButton');
+            const chatPopup = document.getElementById('chatPopup');
+
+            if (isChatOpen &&
+                !isDragging &&
+                !chatWidget.contains(event.target) &&
+                !chatButton.contains(event.target)) {
+                toggleChat();
+            }
+        });
+        /*]]>*/
+    </script>
+</div>
+</body>
+</html>
