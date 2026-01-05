@@ -1,0 +1,27 @@
+[33m5867d71[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32maudit-service-branch[m[33m)[m HEAD@{0}: reset: moving to HEAD
+[33m5867d71[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32maudit-service-branch[m[33m)[m HEAD@{1}: pull origin ilham2: Merge made by the 'ort' strategy.
+[33mae45f50[m[33m ([m[1;31morigin/audit-service-branch[m[33m)[m HEAD@{2}: commit: transaction event to audit
+[33ma4b45af[m HEAD@{3}: pull origin ilham2: Merge made by the 'ort' strategy.
+[33ma36aa8f[m HEAD@{4}: commit: ai and audit
+[33md10f9ef[m HEAD@{5}: checkout: moving from audit-service-branch to audit-service-branch
+[33md10f9ef[m HEAD@{6}: checkout: moving from audit-service-branch to audit-service-branch
+[33md10f9ef[m HEAD@{7}: commit: audit service added
+[33m47893ba[m[33m ([m[1;31morigin/noufissa[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{8}: checkout: moving from audit-service-branch to audit-service-branch
+[33m47893ba[m[33m ([m[1;31morigin/noufissa[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{9}: checkout: moving from main to audit-service-branch
+[33m47893ba[m[33m ([m[1;31morigin/noufissa[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{10}: checkout: moving from main to main
+[33m47893ba[m[33m ([m[1;31morigin/noufissa[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{11}: checkout: moving from new-branch-audit to main
+[33ma808018[m[33m ([m[1;32mnew-branch-audit[m[33m, [m[1;32maudit-branch[m[33m)[m HEAD@{12}: checkout: moving from audit-branch to new-branch-audit
+[33ma808018[m[33m ([m[1;32mnew-branch-audit[m[33m, [m[1;32maudit-branch[m[33m)[m HEAD@{13}: checkout: moving from audit-branch to audit-branch
+[33ma808018[m[33m ([m[1;32mnew-branch-audit[m[33m, [m[1;32maudit-branch[m[33m)[m HEAD@{14}: checkout: moving from audit-branch to audit-branch
+[33ma808018[m[33m ([m[1;32mnew-branch-audit[m[33m, [m[1;32maudit-branch[m[33m)[m HEAD@{15}: commit: adding audit service
+[33me766dc1[m[33m ([m[1;32maudit[m[33m)[m HEAD@{16}: checkout: moving from main to audit-branch
+[33m47893ba[m[33m ([m[1;31morigin/noufissa[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{17}: checkout: moving from audit to main
+[33me766dc1[m[33m ([m[1;32maudit[m[33m)[m HEAD@{18}: reset: moving to HEAD
+[33me766dc1[m[33m ([m[1;32maudit[m[33m)[m HEAD@{19}: checkout: moving from audit to audit
+[33me766dc1[m[33m ([m[1;32maudit[m[33m)[m HEAD@{20}: checkout: moving from audit-branch to audit
+[33me766dc1[m[33m ([m[1;32maudit[m[33m)[m HEAD@{21}: commit: adding audit service
+[33m47893ba[m[33m ([m[1;31morigin/noufissa[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{22}: reset: moving to HEAD~1
+[33m17196d4[m HEAD@{23}: commit: adding audit service
+[33m47893ba[m[33m ([m[1;31morigin/noufissa[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{24}: checkout: moving from main to audit-branch
+[33m47893ba[m[33m ([m[1;31morigin/noufissa[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m HEAD@{25}: pull: Fast-forward
+[33maf1b2fe[m HEAD@{26}: clone: from https://github.com/ilhamAmgoun200/E-Banking__3.0.git
