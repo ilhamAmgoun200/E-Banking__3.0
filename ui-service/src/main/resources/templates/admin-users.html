@@ -3,488 +3,282 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Gestion des Utilisateurs</title>
+    <title>NexBank Admin | Gestion Utilisateurs</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: #f8fafc;
+            font-family: 'Outfit', sans-serif;
+            background: #F8FAFC;
+            color: #1E293B;
             min-height: 100vh;
-            color: #1e293b;
         }
 
-        /* HEADER */
-        .main-header {
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
-            color: white;
-            padding: 0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 1rem 2rem;
+        /* BARRE DE NAVIGATION ADMIN */
+        .admin-nav-bar {
+            background: #0F172A;
+            padding: 1rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        .header-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .header-logo i {
-            font-size: 2rem;
-            background: white;
-            color: #1e3a8a;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .header-nav {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .header-nav a {
             color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo { font-size: 1.5rem; font-weight: 800; }
+        .logo span { color: #D946EF; }
+
+        .admin-links { display: flex; gap: 20px; }
+        .admin-links a {
+            color: #94A3B8;
             text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            transition: all 0.3s;
-            background: rgba(255, 255, 255, 0.1);
+            font-weight: 500;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+        .admin-links a.active { color: #D946EF; font-weight: 700; }
+        .admin-links a:hover { color: white; }
 
-        .header-nav a:hover, .header-nav a.active {
-            background: rgba(255, 255, 255, 0.2);
-        }
+        .container { max-width: 1400px; margin: 2rem auto; padding: 0 2rem; }
 
-        .container {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 2rem;
-        }
+        /* HEADER PAGE */
+        .page-header { margin-bottom: 2.5rem; }
+        .page-header h1 { font-size: 2.2rem; font-weight: 800; color: #0F172A; }
+        .page-header p { color: #64748B; font-size: 1.1rem; }
 
-        .page-header {
-            margin-bottom: 2rem;
-        }
-
-        .page-title h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #0f172a;
-        }
-
-        .subtitle {
-            color: #64748b;
-            font-size: 0.95rem;
-            margin-top: 0.25rem;
-        }
-
-        /* DASHBOARD CARDS */
-        .dashboard {
+        /* CARTES STATS */
+        .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
 
-        .card {
+        .stat-card {
             background: white;
-            padding: 1.75rem;
-            border-radius: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-            border: 1px solid #e2e8f0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-        }
-
-        .card:nth-child(1)::before {
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-        }
-
-        .card:nth-child(2)::before {
-            background: linear-gradient(90deg, #10b981, #06b6d4);
-        }
-
-        .card:nth-child(3)::before {
-            background: linear-gradient(90deg, #f59e0b, #ef4444);
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0,0,0,0.15);
-        }
-
-        .card-header {
+            padding: 1.8rem;
+            border-radius: 24px;
+            border: 1px solid #E2E8F0;
             display: flex;
             align-items: center;
-            gap: 1rem;
-            margin-bottom: 1rem;
+            gap: 20px;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .card-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(139, 92, 246, 0.1); }
 
-        .card-icon-blue {
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-            color: #1e40af;
+        .stat-icon {
+            width: 60px; height: 60px; border-radius: 16px;
+            display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
         }
+        .icon-mauve { background: #F5F3FF; color: #8B5CF6; }
+        .icon-pink { background: #FDF2F8; color: #DB2777; }
+        .icon-cyan { background: #ECFEFF; color: #0891B2; }
 
-        .card-icon-green {
-            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-            color: #047857;
-        }
+        .stat-info h3 { font-size: 0.85rem; color: #64748B; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-value { font-size: 1.8rem; font-weight: 800; color: #0F172A; }
 
-        .card-icon-orange {
-            background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
-            color: #c2410c;
-        }
-
-        .card h3 {
-            font-size: 0.875rem;
-            color: #64748b;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .card-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #0f172a;
-            margin-top: 0.5rem;
-        }
-
-        /* SEARCH */
+        /* RECHERCHE */
         .search-container {
             background: white;
-            padding: 1.5rem;
-            border-radius: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            border: 1px solid #e2e8f0;
-            margin-bottom: 1.5rem;
+            padding: 1.2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
         }
 
-        .search-box {
-            position: relative;
-        }
-
-        .search-box i {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #64748b;
-        }
-
-        .search-box input {
+        .search-wrapper { position: relative; }
+        .search-wrapper i { position: absolute; left: 1.2rem; top: 50%; transform: translateY(-50%); color: #94A3B8; }
+        .search-wrapper input {
             width: 100%;
-            padding: 1rem 1rem 1rem 3rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            transition: all 0.2s;
+            padding: 1rem 1rem 1rem 3.2rem;
+            border: 1px solid #E2E8F0;
+            border-radius: 14px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: 0.3s;
         }
+        .search-wrapper input:focus { outline: none; border-color: #8B5CF6; box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1); }
 
-        .search-box input:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        /* TABLE */
-        .table-container {
+        /* TABLEAU */
+        .nb-card {
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-radius: 24px;
+            border: 1px solid #E2E8F0;
             overflow: hidden;
-            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        thead {
-            background: #f8fafc;
-            border-bottom: 2px solid #e2e8f0;
-        }
-
-        th {
-            padding: 1rem 1.5rem;
+        .nb-table { width: 100%; border-collapse: collapse; }
+        .nb-table th {
+            background: #F8FAFC;
+            padding: 1.2rem 1.5rem;
             text-align: left;
-            color: #475569;
-            font-weight: 700;
             font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        td {
-            padding: 1.25rem 1.5rem;
-            border-bottom: 1px solid #f1f5f9;
-            color: #334155;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        tbody tr {
-            transition: all 0.2s;
-        }
-
-        tbody tr:hover {
-            background: #f8fafc;
-        }
-
-        .balance {
             font-weight: 700;
-            color: #10b981;
-            font-size: 1.05rem;
+            color: #64748B;
+            text-transform: uppercase;
+            border-bottom: 2px solid #F1F5F9;
         }
 
-        .btn {
-            padding: 0.625rem 1.25rem;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+        .nb-table td { padding: 1.2rem 1.5rem; border-bottom: 1px solid #F1F5F9; font-size: 0.95rem; }
+        .nb-table tr:hover { background: #FDF2F8; }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(59, 130, 246, 0.4);
-        }
+        /* ELEMENTS SPECIFIQUES */
+        .user-tag { display: flex; align-items: center; gap: 10px; font-weight: 700; color: #0F172A; }
+        .user-tag i { color: #8B5CF6; }
 
         .badge {
-            padding: 0.35rem 0.75rem;
+            padding: 6px 14px;
             border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            display: inline-block;
-        }
-
-        .badge-info {
-            background: #e0e7ff;
-            color: #4338ca;
-        }
-
-        .badge-success {
-            background: #d1fae5;
-            color: #047857;
-        }
-
-        .alert {
-            padding: 1rem 1.25rem;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            display: flex;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 6px;
         }
+        .badge-cyan { background: #ECFEFF; color: #0891B2; }
+        .badge-green { background: #DCFCE7; color: #15803D; }
+
+        .balance-text { font-weight: 800; color: #10B981; }
+
+        .btn-view {
+            background: #0F172A;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-view:hover { background: #D946EF; transform: scale(1.05); }
 
         .alert-error {
-            background: #fee2e2;
-            color: #991b1b;
-            border-left: 4px solid #ef4444;
+            background: #FEF2F2;
+            color: #991B1B;
+            padding: 1rem 1.5rem;
+            border-radius: 14px;
+            border-left: 4px solid #EF4444;
+            margin-bottom: 2rem;
+            display: flex; align-items: center; gap: 10px;
         }
 
-        .no-results {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: #94a3b8;
-            display: none;
-        }
-
-        .no-results i {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            color: #cbd5e1;
-        }
-
-        @media (max-width: 768px) {
-            .dashboard {
-                grid-template-columns: 1fr;
-            }
-
-            .table-container {
-                overflow-x: auto;
-            }
-        }
+        .no-results { text-align: center; padding: 5rem; display: none; }
+        .no-results i { font-size: 4rem; color: #CBD5E1; margin-bottom: 1rem; }
     </style>
 </head>
 <body>
 
-<header class="main-header">
-    <div class="header-content">
-        <div class="header-logo">
-            <i class="fas fa-building-columns"></i>
-            <span>Banking Portal - Admin</span>
-        </div>
-        <nav class="header-nav">
-            <a href="/admin/users" class="active">
-                <i class="fas fa-users"></i> Utilisateurs
-            </a>
-            <a href="/admin/accounts">
-                <i class="fas fa-wallet"></i> Comptes
-            </a>
-            <a href="/dashboard">
-                <i class="fas fa-home"></i> Dashboard
-            </a>
-        </nav>
-    </div>
+<header class="admin-nav-bar">
+    <div class="logo">NexBank<span>Admin</span></div>
+    <nav class="admin-links">
+        <a href="/admin/users" class="active"><i class="fas fa-users"></i> Utilisateurs</a>
+        <a href="/admin/accounts"><i class="fas fa-wallet"></i> Comptes</a>
+        <a href="/dashboard"><i class="fas fa-chart-line"></i> Vue Client</a>
+    </nav>
 </header>
 
 <div class="container">
     <div class="page-header">
-        <div class="page-title">
-            <h1><i class="fas fa-users"></i> Gestion des Utilisateurs</h1>
-            <p class="subtitle">Vue d'ensemble de tous les utilisateurs et leurs activités</p>
+        <h1>Gestion des Utilisateurs</h1>
+        <p>Administration centrale des profils clients et de leurs actifs système.</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon icon-mauve"><i class="fas fa-users"></i></div>
+            <div class="stat-info">
+                <h3>Utilisateurs Inscrits</h3>
+                <div class="stat-value" th:text="${totalUsers}">0</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon icon-pink"><i class="fas fa-vault"></i></div>
+            <div class="stat-info">
+                <h3>Comptes Ouverts</h3>
+                <div class="stat-value" th:text="${totalAccounts}">0</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon icon-cyan"><i class="fas fa-globe"></i></div>
+            <div class="stat-info">
+                <h3>Masse Monétaire</h3>
+                <div class="stat-value" th:text="${#numbers.formatDecimal(totalSystemBalance, 1, 2)} + ' DH'">0 DH</div>
+            </div>
         </div>
     </div>
 
-    <!-- STATISTIQUES -->
-    <div class="dashboard">
-        <div class="card">
-            <div class="card-header">
-                <div class="card-icon card-icon-blue">
-                    <i class="fas fa-users"></i>
-                </div>
-                <h3>Total Utilisateurs</h3>
-            </div>
-            <div class="card-value" th:text="${totalUsers}">0</div>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <div class="card-icon card-icon-green">
-                    <i class="fas fa-wallet"></i>
-                </div>
-                <h3>Total Comptes</h3>
-            </div>
-            <div class="card-value" th:text="${totalAccounts}">0</div>
-        </div>
-
-        <div class="card">
-            <div class="card-header">
-                <div class="card-icon card-icon-orange">
-                    <i class="fas fa-coins"></i>
-                </div>
-                <h3>Solde Total Système</h3>
-            </div>
-            <div class="card-value" th:text="${#numbers.formatDecimal(totalSystemBalance, 0, 2)} + ' DH'">0 DH</div>
-        </div>
-    </div>
-
-    <!-- MESSAGE D'ERREUR -->
-    <div th:if="${error}" class="alert alert-error">
-        <i class="fas fa-exclamation-circle"></i>
+    <div th:if="${error}" class="alert-error">
+        <i class="fas fa-exclamation-triangle"></i>
         <span th:text="${error}"></span>
     </div>
 
-    <!-- RECHERCHE -->
     <div class="search-container">
-        <div class="search-box">
+        <div class="search-wrapper">
             <i class="fas fa-search"></i>
-            <input type="text" id="searchInput" placeholder="Rechercher un utilisateur..." onkeyup="filterTable()">
+            <input type="text" id="searchInput" placeholder="Filtrer par nom, solde ou transactions..." onkeyup="filterTable()">
         </div>
     </div>
 
-    <!-- TABLE DES UTILISATEURS -->
-    <div class="table-container">
-        <table id="usersTable">
+    <div class="nb-card">
+        <table class="nb-table" id="usersTable">
             <thead>
             <tr>
-                <th>Username</th>
-                <th>Nombre de Comptes</th>
-                <th>Solde Total</th>
-                <th>Transactions</th>
+                <th>Utilisateur</th>
+                <th>Portefeuille</th>
+                <th>Solde Consolidé</th>
+                <th>Activité</th>
                 <th>Actions</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="user : ${users}">
                 <td>
-                    <strong><i class="fas fa-user"></i> <span th:text="${user.username}"></span></strong>
+                    <div class="user-tag">
+                        <i class="fas fa-user-circle"></i>
+                        <span th:text="${user.username}"></span>
+                    </div>
                 </td>
                 <td>
-                    <span class="badge badge-info">
-                        <i class="fas fa-wallet"></i> <span th:text="${user.accountCount}"></span> compte(s)
+                    <span class="badge badge-cyan">
+                        <i class="fas fa-folder-open"></i> <span th:text="${user.accountCount}"></span> compte(s)
                     </span>
                 </td>
                 <td>
-                    <span class="balance" th:text="${#numbers.formatDecimal(user.totalBalance, 0, 2)} + ' DH'"></span>
+                    <span class="balance-text" th:text="${#numbers.formatDecimal(user.totalBalance, 1, 2)} + ' DH'"></span>
                 </td>
                 <td>
-                    <span class="badge badge-success">
-                        <i class="fas fa-exchange-alt"></i> <span th:text="${user.transactionCount}"></span> transaction(s)
+                    <span class="badge badge-green">
+                        <i class="fas fa-sync-alt"></i> <span th:text="${user.transactionCount}"></span> op.
                     </span>
                 </td>
                 <td>
-                    <a th:href="@{/admin/users/{username}(username=${user.username})}" class="btn btn-primary">
-                        <i class="fas fa-eye"></i> Voir Détails
+                    <a th:href="@{/admin/users/{username}(username=${user.username})}" class="btn-view">
+                        <i class="fas fa-external-link-alt"></i> Détails
                     </a>
                 </td>
             </tr>
             </tbody>
         </table>
-    </div>
 
-    <!-- NO RESULTS -->
-    <div id="noResults" class="no-results">
-        <i class="fas fa-search"></i>
-        <p>Aucun utilisateur trouvé</p>
+        <div id="noResults" class="no-results">
+            <i class="fas fa-user-slash"></i>
+            <p>Aucun utilisateur ne correspond à votre recherche.</p>
+        </div>
     </div>
 </div>
 
@@ -504,7 +298,7 @@
             }
         });
 
-        document.getElementById('usersTable').parentElement.style.display = visibleCount ? 'block' : 'none';
+        document.querySelector('.nb-table').style.display = visibleCount ? 'table' : 'none';
         document.getElementById('noResults').style.display = visibleCount ? 'none' : 'block';
     }
 </script>

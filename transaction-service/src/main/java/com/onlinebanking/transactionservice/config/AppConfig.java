@@ -6,10 +6,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class AppConfig {
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
     @Bean
     public RestTemplate restTemplate() {
         return new RestTemplate();

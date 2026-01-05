@@ -3,116 +3,244 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SecureBank - Dashboard</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}" />
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏦</text></svg>" />
+    <title>NexBank | Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: radial-gradient(circle at top right, #fdf2f8, #f8fafc);
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        /* Navbar NexBank */
+        .nb-navbar {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+        }
+        .logo { font-size: 1.5rem; font-weight: 800; color: #0f172a; text-decoration: none; }
+        .logo span { color: #8b5cf6; }
+        .nav-links { display: flex; gap: 2rem; list-style: none; align-items: center; }
+        .nav-links a { text-decoration: none; color: #64748b; font-weight: 600; transition: 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: #8b5cf6; }
+
+        .btn-logout {
+            background: #fef2f2;
+            color: #ef4444;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-logout:hover { background: #ef4444; color: white; }
+
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 20px; }
+
+        /* Welcome Hero */
+        .welcome-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border-radius: 30px;
+            padding: 3rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.1);
+        }
+        .welcome-hero::after {
+            content: ''; position: absolute; top: -50px; right: -50px;
+            width: 200px; height: 200px; background: rgba(139, 92, 246, 0.2);
+            filter: blur(50px); border-radius: 50%;
+        }
+        .welcome-hero h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+        .welcome-hero p { opacity: 0.8; font-size: 1.1rem; }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 24px;
+            border: 1px solid #e2e8f0;
+            transition: 0.3s ease;
+        }
+        .stat-card:hover { transform: translateY(-5px); border-color: #8b5cf6; }
+        .stat-icon {
+            font-size: 2rem; margin-bottom: 1rem;
+            display: inline-block; padding: 15px; border-radius: 16px;
+        }
+        .bg-purple { background: #f5f3ff; color: #8b5cf6; }
+        .bg-blue { background: #eff6ff; color: #3b82f6; }
+        .bg-green { background: #f0fdf4; color: #10b981; }
+
+        /* Quick Actions */
+        .actions-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 30px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 2rem;
+        }
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .action-item {
+            text-decoration: none;
+            color: inherit;
+            padding: 1.5rem;
+            border-radius: 20px;
+            background: #f8fafc;
+            text-align: center;
+            transition: 0.3s;
+            border: 1px solid transparent;
+        }
+        .action-item:hover {
+            background: white;
+            border-color: #d946ef;
+            box-shadow: 0 10px 20px rgba(217, 70, 239, 0.1);
+            transform: scale(1.03);
+        }
+        .action-item i { font-size: 1.5rem; color: #d946ef; margin-bottom: 10px; }
+
+        /* Features Section */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        .feature-box { text-align: center; }
+        .feature-box i { font-size: 2.5rem; margin-bottom: 1rem; color: #8b5cf6; }
+        .feature-box h4 { margin-bottom: 0.5rem; font-weight: 700; }
+        .feature-box p { color: #64748b; font-size: 0.9rem; line-height: 1.6; }
+
+        .footer {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .features-grid { grid-template-columns: 1fr; }
+            .welcome-hero { padding: 2rem; }
+        }
+    </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="nav-container">
-            <div class="logo">🏦 SecureBank</div>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="/dashboard">Dashboard</a></li>
-                    <li><a href="/accounts">Accounts</a></li>
-                    <li><a href="/transactions">Transactions</a></li>
-                    <li>
-                        <form th:action="@{/logout}" method="get" style="display: inline;">
-                            <button type="submit" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
-                                Sign Out
-                            </button>
-                        </form>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </header>
 
-    <div class="container">
-        <!-- Welcome Section -->
-        <div class="card">
-            <h1 style="margin-bottom: 0.5rem;">Welcome Back! 👋</h1>
-            <p style="text-align: center; color: #666; font-size: 1.2rem;">
-                Manage your finances with confidence and ease
-            </p>
-        </div>
+<header class="nb-navbar">
+    <a href="/dashboard" class="logo">Nex<span>Bank</span></a>
+    <nav>
+        <ul class="nav-links">
+            <li><a href="/dashboard" class="active">Dashboard</a></li>
+            <li><a href="/accounts">Comptes</a></li>
+            <li><a href="/transactions">Transactions</a></li>
+            <li>
+                <form th:action="@{/logout}" method="get">
+                    <button type="submit" class="btn-logout">Déconnexion</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
+</header>
 
-        <!-- Quick Stats -->
-        <div class="dashboard-grid">
-            <div class="stat-card">
-                <div class="stat-value">💰</div>
-                <div class="stat-label">Total Balance</div>
-                <p style="color: #666; margin-top: 0.5rem;">View in Accounts</p>
-            </div>
-            
-            <div class="stat-card">
-                <div class="stat-value">📊</div>
-                <div class="stat-label">Recent Activity</div>
-                <p style="color: #666; margin-top: 0.5rem;">View in Transactions</p>
-            </div>
-            
-            <div class="stat-card">
-                <div class="stat-value">🔒</div>
-                <div class="stat-label">Secure Banking</div>
-                <p style="color: #666; margin-top: 0.5rem;">Protected 24/7</p>
-            </div>
+<div class="container">
+    <div class="welcome-hero">
+        <h1>Bonjour 👋</h1>
+        <p>Ravi de vous revoir sur votre espace NexBank. Gérez vos finances en toute simplicité.</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon bg-purple"><i class="fas fa-wallet"></i></div>
+            <div style="font-weight: 700; font-size: 1.1rem;">Solde Total</div>
+            <p style="color: #64748b; margin-top: 0.5rem; font-size: 0.9rem;">Consultez vos comptes pour le détail</p>
         </div>
 
-        <!-- Quick Actions -->
-        <div class="card">
-            <h2 style="margin-bottom: 2rem;">Quick Actions</h2>
-            <div class="nav-menu">
-                <a href="/accounts" class="nav-item">
-                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🏦</div>
-                    <div>View Accounts</div>
-                    <small style="color: #666;">Check balances & details</small>
-                </a>
-                
-                <a href="/transactions" class="nav-item">
-                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">💳</div>
-                    <div>View Transactions</div>
-                    <small style="color: #666;">Transaction history</small>
-                </a>
-                
-                <a href="/accounts" class="nav-item">
-                    <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">💸</div>
-                    <div>Transfer Money</div>
-                    <small style="color: #666;">Send & receive funds</small>
-                </a>
-            </div>
+        <div class="stat-card">
+            <div class="stat-icon bg-blue"><i class="fas fa-history"></i></div>
+            <div style="font-weight: 700; font-size: 1.1rem;">Activité Récente</div>
+            <p style="color: #64748b; margin-top: 0.5rem; font-size: 0.9rem;">Derniers flux mis à jour en temps réel</p>
         </div>
 
-        <!-- Features Section -->
-        <div class="card">
-            <h3 style="text-align: center; margin-bottom: 2rem;">Why Choose SecureBank?</h3>
-            <div class="dashboard-grid">
-                <div style="text-align: center; padding: 1rem;">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">🛡️</div>
-                    <h4 style="color: #667eea; margin-bottom: 0.5rem;">Bank-Grade Security</h4>
-                    <p style="color: #666;">Your data is protected with enterprise-level encryption</p>
-                </div>
-                
-                <div style="text-align: center; padding: 1rem;">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
-                    <h4 style="color: #667eea; margin-bottom: 0.5rem;">Lightning Fast</h4>
-                    <p style="color: #666;">Instant transactions and real-time updates</p>
-                </div>
-                
-                <div style="text-align: center; padding: 1rem;">
-                    <div style="font-size: 3rem; margin-bottom: 1rem;">📱</div>
-                    <h4 style="color: #667eea; margin-bottom: 0.5rem;">Mobile Ready</h4>
-                    <p style="color: #666;">Access your accounts anywhere, anytime</p>
-                </div>
-            </div>
+        <div class="stat-card">
+            <div class="stat-icon bg-green"><i class="fas fa-shield-halved"></i></div>
+            <div style="font-weight: 700; font-size: 1.1rem;">Sécurité NexSafe</div>
+            <p style="color: #64748b; margin-top: 0.5rem; font-size: 0.9rem;">Votre compte est protégé (SSL 256-bit)</p>
         </div>
     </div>
 
-    <div class="footer">
-        <p>&copy; 2024 SecureBank. Your trusted financial partner since day one.</p>
-        <p style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.8;">
-            🔒 All transactions are secured with 256-bit SSL encryption
-        </p>
+    <div class="actions-card">
+        <h2 style="font-weight: 800;">Actions Rapides</h2>
+        <div class="actions-grid">
+            <a href="/accounts" class="action-item">
+                <i class="fas fa-university"></i>
+                <div style="font-weight: 700;">Mes Comptes</div>
+                <small style="color: #94a3b8;">Solder & Détails</small>
+            </a>
+
+            <a href="/transactions" class="action-item">
+                <i class="fas fa-list-ul"></i>
+                <div style="font-weight: 700;">Historique</div>
+                <small style="color: #94a3b8;">Suivi des dépenses</small>
+            </a>
+
+            <a href="/accounts" class="action-item">
+                <i class="fas fa-paper-plane"></i>
+                <div style="font-weight: 700;">Virement</div>
+                <small style="color: #94a3b8;">Transférer des fonds</small>
+            </a>
+        </div>
     </div>
+
+    <div class="features-grid">
+        <div class="feature-box">
+            <i class="fas fa-user-shield"></i>
+            <h4>Sécurité Bancaire</h4>
+            <p>Vos données sont protégées par un chiffrement de niveau entreprise.</p>
+        </div>
+
+        <div class="feature-box">
+            <i class="fas fa-bolt"></i>
+            <h4>Transactions Flash</h4>
+            <p>Transferts instantanés et mises à jour de solde immédiates.</p>
+        </div>
+
+        <div class="feature-box">
+            <i class="fas fa-mobile-alt"></i>
+            <h4>Multi-plateforme</h4>
+            <p>Accédez à vos comptes partout, sur mobile, tablette ou desktop.</p>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <p>&copy; 2026 NexBank. Votre partenaire financier de confiance.</p>
+    <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.6;">
+        NexBank est une institution régulée. Toutes les transactions sont sécurisées.
+    </p>
+</footer>
 </body>
 </html>
