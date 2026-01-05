@@ -13,6 +13,8 @@
         .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
         .full-width { grid-column: span 2; }
         .form-control { width: 100%; padding: 0.8rem; margin-top: 0.4rem; border: 1px solid #E2E8F0; border-radius: 10px; }
+        .btn-primary { background: #8B5CF6; color: white; padding: 1rem; border-radius: 10px; font-weight: 600; transition: 0.3s; }
+        .btn-primary:hover { background: #7C3AED; }
     </style>
 </head>
 <body>
@@ -34,18 +36,23 @@
                     <label style="font-size: 0.85rem; font-weight: 600;">Nom</label>
                     <input type="text" name="lastName" class="form-control" required placeholder="Dupont">
                 </div>
+
+                <div class="full-width">
+                    <label style="font-size: 0.85rem; font-weight: 600;">Adresse Email</label>
+                    <input type="email" name="email" class="form-control" required placeholder="jean.dupont@email.com">
+                </div>
+
                 <div class="full-width">
                     <label style="font-size: 0.85rem; font-weight: 600;">Nom d'utilisateur</label>
                     <input type="text" name="username" class="form-control" required placeholder="jdupont88">
                 </div>
-                <div class="full-width">
-                    <label style="font-size: 0.85rem; font-weight: 600;">Numéro de Compte (Souhaité)</label>
-                    <input type="text" name="accountNumber" class="form-control" required placeholder="FR76 3000...">
-                </div>
+
                 <div class="full-width" style="margin-bottom: 1.5rem;">
                     <label style="font-size: 0.85rem; font-weight: 600;">Mot de passe</label>
                     <input type="password" name="password" class="form-control" required placeholder="Créer un mot de passe fort">
                 </div>
+
+                <input type="hidden" name="role" value="USER">
             </div>
 
             <button type="submit" class="btn-primary" style="width: 100%; border: none; cursor: pointer;">

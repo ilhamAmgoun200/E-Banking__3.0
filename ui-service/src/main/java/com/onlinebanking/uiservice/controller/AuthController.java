@@ -126,19 +126,24 @@ public class AuthController {
     @PostMapping("/register")
     public String register(@RequestParam String username,
                            @RequestParam String password,
-                           @RequestParam String accountNumber,
+                           @RequestParam String email,      // AJOUTER CECI
+                           @RequestParam String firstName,  // AJOUTER CECI
+                           @RequestParam String lastName,   // AJOUTER CECI
                            Model model) {
 
         Map<String, String> req = new HashMap<>();
         req.put("username", username);
         req.put("password", password);
-        req.put("accountNumber", accountNumber);
+        req.put("email", email);
+        req.put("firstName", firstName);
+        req.put("lastName", lastName);
+        req.put("role", "USER"); // Rôle par défaut
 
         Map<String, Object> response = userServiceClientWithCircuitBreaker.registerWithFallback(req);
 
-        if (response.containsKey("success") && (Boolean) response.get("success")) {
-            // Création du compte bancaire initial dans Account-Service
-            createInitialAccount(username, accountNumber, model);
+        if (response.containsKey("success") || response.toString().contains("succès")) {
+            // Note: On ne crée plus le compte bancaire ici manuellement si on veut
+            // laisser l'Account-Service s'en charger plus tard
             return "redirect:/login?registered=true";
         } else {
             handleRegistrationError(response, model);

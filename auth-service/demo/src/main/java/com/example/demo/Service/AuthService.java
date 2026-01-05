@@ -71,48 +71,35 @@ public class AuthService {
         Response response = usersResource.create(user);
 
         if (response.getStatus() == 201) {
+            // C'est ici qu'on récupère l'ID généré par Keycloak
             String userId = CreatedResponseUtil.getCreatedId(response);
 
-            // Assignation du rôle
+            // Assignation du rôle (on utilise roleName passé en paramètre)
             assignRole(userId, roleName);
 
-            // --- 3. SYNCHRONISATION AVEC USER-SERVICE ---
+            // --- SYNCHRONISATION AVEC USER-SERVICE ---
             try {
                 UserDTO userDTO = new UserDTO();
-                userDTO.setKeycloakId(userId); // Le lien crucial
+                userDTO.setKeycloakId(userId); // Correction : on utilise userId
                 userDTO.setUsername(username);
                 userDTO.setEmail(email);
                 userDTO.setFirstName(firstName);
                 userDTO.setLastName(lastName);
-                userDTO.setRole(roleName);
+                userDTO.setRole(roleName);     // Correction : on utilise roleName
 
-                // L'appel "téléphonique" vers l'autre service
+                // Appel via Feign Client
                 userServiceClient.createUserProfile(userDTO);
                 System.out.println("✅ Succès : Profil créé dans User-Service pour l'ID " + userId);
 
             } catch (Exception e) {
-                // On log l'erreur mais on ne bloque pas l'inscription Keycloak
                 System.err.println("⚠️ ATTENTION : Échec de la synchro User-Service : " + e.getMessage());
             }
-            // ---------------------------------------------
 
             return "Utilisateur créé avec succès (MFA requis). ID: " + userId;
         } else {
             throw new RuntimeException("Erreur Keycloak: " + response.getStatusInfo());
         }
-        // 2. APPEL AU USER-SERVICE (C'est ici que le lien se fait)
-        UserDTO userDto = new UserDTO();
-        userDto.setKeycloakId(keycloakId);
-        userDto.setUsername(username);
-        userDto.setEmail(email);
-        userDto.setFirstName(firstName);
-        userDto.setLastName(lastName);
-        userDto.setRole(role);
-
-        userServiceClient.createUserProfile(userDto); // Utilise Feign Client
-
-        return "Utilisateur créé avec succès";
-
+        // TOUT LE CODE QUI ÉTAIT APRÈS CE BLOC DOIT ÊTRE SUPPRIMÉ
     }
 
     public AccessTokenResponse login(String username, String password) {

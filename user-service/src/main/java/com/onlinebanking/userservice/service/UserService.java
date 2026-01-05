@@ -3,28 +3,24 @@ package com.onlinebanking.userservice.service;
 import com.onlinebanking.userservice.model.User;
 import com.onlinebanking.userservice.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.List;
 import java.util.Optional;
 
-    @Service
-    public class UserService {
-        @Autowired
-        private UserRepository userRepository;
+@Service
+public class UserService {
+    @Autowired
+    private UserRepository userRepository;
 
-        // Create a user (called after Keycloak registration)
-        public User createUser(User user) {
-            return userRepository.save(user);
-        }
-
-        // Find by Keycloak ID
-        public Optional<User> getUserByKeycloakId(String keycloakId) {
-            return userRepository.findByKeycloakId(keycloakId);
-        }
-
-        // Find all (for Agents)
-        public List<User> getAllUsers() {
-            return userRepository.findAll();
-        }
+    // Cette méthode sera appelée par l'Auth-Service après la création dans Keycloak
+    public void saveProfileFromAuth(String keycloakId, String username, String email, String fName, String lName, String role) {
+        User user = new User();
+        user.setKeycloakId(keycloakId);
+        user.setUsername(username);
+        user.setEmail(email);
+        user.setFirstName(fName);
+        user.setLastName(lName);
+        user.setRole(role);
+        userRepository.save(user);
     }
-
+}

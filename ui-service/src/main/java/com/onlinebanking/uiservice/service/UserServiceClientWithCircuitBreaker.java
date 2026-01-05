@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 @Service
 public class UserServiceClientWithCircuitBreaker {
     
-    private static final String USER_SERVICE_BASE_URL = "http://localhost:8084";
+    private static final String USER_SERVICE_BASE_URL = "http://localhost:8083";
     
     @Autowired
     private RestTemplate restTemplate;

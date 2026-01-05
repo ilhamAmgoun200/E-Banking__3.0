@@ -20,7 +20,7 @@ public class TransactionServiceClient {
     @Autowired
     private CircuitBreaker transactionServiceCircuitBreaker;
     
-    private static final String TRANSACTION_SERVICE_URL = "http://localhost:8082";
+    private static final String TRANSACTION_SERVICE_URL = "http://localhost:8087";
     
     public List<Map<String, Object>> getTransactionsByUsername(String username) {
         Supplier<List<Map<String, Object>>> supplier = () -> {
