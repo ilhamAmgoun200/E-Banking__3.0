@@ -32,8 +32,11 @@ public class AuthController {
 
     @Autowired
     private RestTemplate restTemplate;
-
-    @GetMapping({"/", "/login"})
+    @GetMapping("/")
+    public String index() {
+        return "index"; // Assurez-vous que le fichier s'appelle bien index.html
+    }
+    @GetMapping( "/login")
     public String loginPage() {
         return "login";
     }
