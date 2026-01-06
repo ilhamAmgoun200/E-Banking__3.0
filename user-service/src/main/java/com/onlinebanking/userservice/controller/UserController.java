@@ -80,4 +80,42 @@ public class UserController {
             return ResponseEntity.status(401).body(resp);
         }
     }
+
+    @PostMapping("/2fa/enable")
+    public ResponseEntity<?> enable2FA(@RequestParam String username) {
+        try {
+            String qrUrl = userService.enable2FA(username);
+            Map<String, String> resp = new HashMap<>();
+            resp.put("qrUrl", qrUrl);
+            return ResponseEntity.ok(resp);
+        } catch (Exception e) {
+            Map<String, String> errorResp = new HashMap<>();
+            errorResp.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResp);
+        }
+    }
+
+    @PostMapping("/2fa/disable")
+    public ResponseEntity<?> disable2FA(@RequestParam String username) {
+        boolean success = userService.disable2FA(username);
+        return ResponseEntity.ok(Map.of("success", success));
+    }
+
+    @PostMapping("/2fa/verify")
+    public ResponseEntity<?> verify2FA(@RequestParam String username, @RequestParam String code) {
+        boolean valid = userService.verify2FACode(username, code);
+        return ResponseEntity.ok(Map.of("valid", valid));
+    }
+
+    @GetMapping("/2fa/status")
+    public ResponseEntity<?> get2FAStatus(@RequestParam String username) {
+        Optional<User> userOpt = userService.findByUsername(username);  // ← now correct!
+
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        User user = userOpt.get();
+        return ResponseEntity.ok(Map.of("using2fa", user.is2faEnabled()));
+    }
 }

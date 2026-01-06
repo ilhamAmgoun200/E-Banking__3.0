@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>2FA Verification - SecureBank</title>
+    <!-- Copy styles from your login.html or link to /css/style.css -->
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <!-- Add any other head stuff from login.html -->
+</head>
+<body>
+<div class="container">
+    <div class="auth-card">
+        <div class="header-title">Two-Factor Authentication</div>
+        <div class="header-subtitle">Enter the 6-digit code from your authenticator app</div>
+
+        <div th:if="${error}" class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i>
+            <span th:text="${error}"></span>
+        </div>
+
+        <form method="post" th:action="@{/2fa/verify}">
+            <div class="form-group">
+                <label for="code"><i class="fas fa-key"></i> Verification Code</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-key input-icon"></i>
+                    <input type="text" id="code" name="code" required maxlength="6" pattern="\d{6}" placeholder="123456"/>
+                </div>
+            </div>
+            <button type="submit" class="btn-primary">
+                <i class="fas fa-check"></i> Verify
+            </button>
+        </form>
+
+        <div class="auth-link">
+            <a th:href="@{/logout}">Cancel and Logout</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

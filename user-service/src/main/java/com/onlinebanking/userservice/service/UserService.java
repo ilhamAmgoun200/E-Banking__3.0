@@ -16,6 +16,9 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private TwoFactorAuthService twoFactorAuthService;
+
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public boolean register(Map<String, String> req) {
@@ -128,5 +131,59 @@ public class UserService {
             return userOpt;
         }
         return Optional.empty();
+    }
+
+    public String enable2FA(String username) {
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+        User user = userOpt.get();
+
+        if (user.is2faEnabled()) {
+            throw new IllegalStateException("2FA already enabled");
+        }
+
+        String secret = twoFactorAuthService.generateSecret();
+        user.setSecret2fa(secret);
+        user.setUsing2fa(true);
+        userRepository.save(user);
+
+        return twoFactorAuthService.generateQrUrl(username, secret);
+    }
+
+    public boolean disable2FA(String username) {
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (userOpt.isEmpty()) {
+            return false;
+        }
+        User user = userOpt.get();
+
+        if (!user.is2faEnabled()) {
+            return false;
+        }
+
+        user.setSecret2fa(null);
+        user.setUsing2fa(null); // or false, but null is fine since nullable
+        userRepository.save(user);
+        return true;
+    }
+
+    public boolean verify2FACode(String username, String code) {
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if (userOpt.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+        User user = userOpt.get();
+
+        if (!user.is2faEnabled()) {
+            return true; // 2FA not enabled (null or false) → skip
+        }
+
+        return twoFactorAuthService.verifyCode(user.getSecret2fa(), code);
+    }
+
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 }

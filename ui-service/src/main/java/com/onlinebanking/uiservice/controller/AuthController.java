@@ -2,21 +2,22 @@ package com.onlinebanking.uiservice.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.client.RestTemplate;
 
 import com.onlinebanking.uiservice.service.UserServiceClient;
 import com.onlinebanking.uiservice.service.UserServiceClientWithCircuitBreaker;
 import com.onlinebanking.uiservice.service.AccountServiceClient;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.http.ResponseEntity;
+
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
-import org.springframework.web.client.RestTemplate;
-
 
 @Controller
 public class AuthController {
@@ -43,7 +44,6 @@ public class AuthController {
 
     @GetMapping("/dashboard")
     public String dashboard(Model model, HttpSession session) {
-        // Traditional login user
         String username = (String) session.getAttribute("username");
         if (username != null) {
             model.addAttribute("name", username);
@@ -53,71 +53,75 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password, Model model, HttpSession session) {
-        System.out.println("Login attempt for username: " + username);
+    public String loginStep1(
+            @RequestParam String username,
+            @RequestParam String password,
+            HttpSession session,
+            Model model) {
 
+        System.out.println("Login attempt for username: " + username);
         Map<String, String> req = new HashMap<>();
         req.put("username", username);
         req.put("password", password);
 
-        // Use circuit breaker for login
         Map<String, Object> response = userServiceClientWithCircuitBreaker.loginWithFallback(req);
-
         System.out.println("Login response: " + response);
 
         if (response.containsKey("token")) {
-            // Store username in session
-            session.setAttribute("username", username);
+            session.setAttribute("temp_username", username);
 
-            // Récupérer le rôle avec RestTemplate au lieu de Feign
+            // Check if 2FA is enabled
             try {
-                String accountServiceUrl = "http://localhost:8081/accounts/user/" + username;
-                System.out.println("🔍 Fetching accounts from: " + accountServiceUrl);
+                String statusUrl = "http://localhost:8084/api/2fa/status?username=" + username;
+                @SuppressWarnings("unchecked")
+                Map<String, Object> statusResp = restTemplate.getForObject(statusUrl, Map.class);
+                boolean using2fa = (boolean) statusResp.getOrDefault("using2fa", false);
 
-                Map<String, Object>[] accounts = restTemplate.getForObject(accountServiceUrl, Map[].class);
-
-                System.out.println("🔍 Accounts found: " + (accounts != null ? accounts.length : "null"));
-
-                if (accounts != null && accounts.length > 0) {
-                    String role = (String) accounts[0].get("role");
-                    session.setAttribute("role", role);
-
-                    System.out.println("✅ Role detected: " + role);
-
-                    // Redirection selon le rôle
-                    if ("ADMIN".equalsIgnoreCase(role)) {
-                        System.out.println("🔄 Redirecting ADMIN to /admin/accounts");
-                        return "redirect:/admin/accounts";
-                    } else if ("AGENT".equalsIgnoreCase(role)) {
-                        System.out.println("🔄 Redirecting AGENT to /agent/accounts");
-                        return "redirect:/agent/accounts";
-                    } else {
-                        System.out.println("🔄 Redirecting CLIENT to /dashboard");
-                        return "redirect:/dashboard";
-                    }
+                if (using2fa) {
+                    return "2fa-verification";
                 } else {
-                    System.out.println("⚠️ No accounts found for user");
+                    completeLogin(session, username);
+                    return redirectAccordingToRole(session, username);
                 }
             } catch (Exception e) {
-                System.err.println("❌ Error fetching user role: " + e.getMessage());
-                e.printStackTrace();
+                model.addAttribute("error", "Error checking 2FA status: " + e.getMessage());
+                return "login";
             }
-
-            // Fallback si on ne trouve pas le rôle
-            System.out.println("⚠️ Fallback to dashboard");
-            return "redirect:/dashboard";
-
         } else {
-            // Handle circuit breaker open state with special message
-            if (response.containsKey("circuitBreakerOpen") && (Boolean) response.get("circuitBreakerOpen")) {
-                model.addAttribute("error", "🔴 " + response.get("error"));
-                model.addAttribute("circuitBreakerError", true);
-                System.out.println("Circuit breaker error for: " + username);
-            } else {
-                model.addAttribute("error", response.getOrDefault("error", "Login failed"));
-                System.out.println("Login failed for: " + username + " - " + response.getOrDefault("error", "Login failed"));
-            }
+            model.addAttribute("error", response.getOrDefault("error", "Invalid credentials"));
             return "login";
+        }
+    }
+
+    @PostMapping("/2fa/verify")
+    public String verify2FA(
+            @RequestParam String code,
+            HttpSession session,
+            Model model) {
+
+        String username = (String) session.getAttribute("temp_username");
+        if (username == null) {
+            model.addAttribute("error", "Session expired. Please login again.");
+            return "redirect:/login";
+        }
+
+        try {
+            String verifyUrl = "http://localhost:8084/api/2fa/verify?username=" + username + "&code=" + code;
+            @SuppressWarnings("unchecked")
+            Map<String, Object> resp = restTemplate.postForObject(verifyUrl, null, Map.class);
+            boolean valid = (boolean) resp.getOrDefault("valid", false);
+
+            if (valid) {
+                completeLogin(session, username);
+                session.removeAttribute("temp_username");
+                return redirectAccordingToRole(session, username);
+            } else {
+                model.addAttribute("error", "Invalid 2FA code");
+                return "2fa-verification";
+            }
+        } catch (Exception e) {
+            model.addAttribute("error", "Error verifying 2FA: " + e.getMessage());
+            return "2fa-verification";
         }
     }
 
@@ -159,7 +163,6 @@ public class AuthController {
         Map<String, Object> response = userServiceClientWithCircuitBreaker.registerWithFallback(req);
 
         if (response.containsKey("success") && (Boolean) response.get("success")) {
-            // Création compte dans account-service avec RestTemplate
             Map<String, Object> accountReq = new HashMap<>();
             accountReq.put("accountNumber", accountNumber);
             accountReq.put("accountHolderName", username);
@@ -168,20 +171,13 @@ public class AuthController {
             accountReq.put("role", role);
             accountReq.put("status", status);
 
-            System.out.println("📤 Sending to account-service: " + accountReq);
-
             try {
                 String accountServiceUrl = "http://localhost:8081/accounts";
-                Map<String, Object> accountResponse = restTemplate.postForObject(
-                        accountServiceUrl,
-                        accountReq,
-                        Map.class
-                );
-                System.out.println("✅ Account created successfully: " + accountResponse);
+                restTemplate.postForObject(accountServiceUrl, accountReq, Map.class);
             } catch (Exception ex) {
                 System.err.println("❌ Account creation failed: " + ex.getMessage());
                 ex.printStackTrace();
-                model.addAttribute("warning", "User registered but account creation failed. Please contact support.");
+                model.addAttribute("warning", "User registered but account creation failed.");
             }
             return "redirect:/login";
         } else {
@@ -190,27 +186,23 @@ public class AuthController {
         }
     }
 
-
-    // Circuit breaker monitoring endpoint for user service
     @GetMapping("/user-service/circuit-breaker/status")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> getUserServiceCircuitBreakerStatus() {
         Map<String, Object> status = new HashMap<>();
-        
-        // Get user service circuit breaker status
         String state = userServiceClientWithCircuitBreaker.getCircuitBreakerState();
         io.github.resilience4j.circuitbreaker.CircuitBreaker.Metrics metrics = userServiceClientWithCircuitBreaker.getCircuitBreakerMetrics();
-        
+
         Map<String, Object> userServiceStatus = new HashMap<>();
         userServiceStatus.put("state", state);
         userServiceStatus.put("failureRate", metrics.getFailureRate());
         userServiceStatus.put("numberOfBufferedCalls", metrics.getNumberOfBufferedCalls());
         userServiceStatus.put("numberOfFailedCalls", metrics.getNumberOfFailedCalls());
         userServiceStatus.put("numberOfSuccessfulCalls", metrics.getNumberOfSuccessfulCalls());
-        
+
         status.put("user-service", userServiceStatus);
         status.put("timestamp", java.time.LocalDateTime.now());
-        
+
         return ResponseEntity.ok(status);
     }
 
@@ -218,5 +210,35 @@ public class AuthController {
     public String logout(HttpSession session) {
         session.invalidate();
         return "redirect:/login";
+    }
+
+    // Helper methods
+    private void completeLogin(HttpSession session, String username) {
+        session.setAttribute("username", username);
+    }
+
+    private String redirectAccordingToRole(HttpSession session, String username) {
+        try {
+            String accountServiceUrl = "http://localhost:8081/accounts/user/" + username;
+            @SuppressWarnings("unchecked")
+            Map<String, Object>[] accounts = restTemplate.getForObject(accountServiceUrl, Map[].class);
+
+            if (accounts != null && accounts.length > 0) {
+                String role = (String) accounts[0].get("role");
+                session.setAttribute("role", role);
+
+                if ("ADMIN".equalsIgnoreCase(role)) {
+                    return "redirect:/admin/accounts";
+                } else if ("AGENT".equalsIgnoreCase(role)) {
+                    return "redirect:/agent/accounts";
+                } else {
+                    return "redirect:/dashboard";
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error fetching role: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return "redirect:/dashboard";
     }
 }

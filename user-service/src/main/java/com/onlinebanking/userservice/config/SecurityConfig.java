@@ -12,9 +12,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf().disable()
-            .authorizeRequests()
-                .antMatchers("/api/register", "/api/login", "/api/test").permitAll()
+                .csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/api/register", "/api/login", "/api/test", "/2fa/**", "/api/2fa/**").permitAll()
                 .anyRequest().authenticated();
         return http.build();
     }
