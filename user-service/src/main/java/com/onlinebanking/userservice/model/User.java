@@ -52,6 +52,12 @@ public class User {
     @Column(nullable = true)
     private String status = "ACTIVE";
 
+    @Column(name = "secret_2fa", length = 64)
+    private String secret2fa;
+
+    @Column(name = "using_2fa")
+    private Boolean using2fa;
+
     // Getters et setters pour tous les champs
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -98,4 +104,23 @@ public class User {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public String getSecret2fa() {
+        return secret2fa;
+    }
+    public void setSecret2fa(String secret2fa) {
+        this.secret2fa = secret2fa;
+    }
+
+    public Boolean getUsing2fa() {
+        return using2fa;
+    }
+    public void setUsing2fa(Boolean using2fa) {
+        this.using2fa = using2fa;
+    }
+
+    // Helper method for safe checking (add this too)
+    public boolean is2faEnabled() {
+        return Boolean.TRUE.equals(using2fa) && secret2fa != null && !secret2fa.isEmpty();
+    }
 }

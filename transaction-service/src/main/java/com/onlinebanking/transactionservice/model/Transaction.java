@@ -27,9 +27,6 @@ public class Transaction {
 
     @Column(nullable = true)
     private String fraudReason;
-
-
-
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getAccountNumber() { return accountNumber; }
