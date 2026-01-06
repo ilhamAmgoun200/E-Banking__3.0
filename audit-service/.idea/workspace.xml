@@ -5,21 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c3232711-ef55-42d0-8c96-c194ee536cc1" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/static/css/home-style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../transaction-service/src/main/java/com/onlinebanking/transactionservice/config/AppConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../transaction-service/src/main/java/com/onlinebanking/transactionservice/config/AppConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../transaction-service/src/main/java/com/onlinebanking/transactionservice/model/Transaction.java" beforeDir="false" afterPath="$PROJECT_DIR$/../transaction-service/src/main/java/com/onlinebanking/transactionservice/model/Transaction.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/java/com/onlinebanking/uiservice/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/java/com/onlinebanking/uiservice/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/accounts.html" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/accounts.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/admin-accounts.html" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/admin-accounts.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/admin-user-details.html" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/admin-user-details.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/admin-users.html" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/admin-users.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/agent-accounts.html" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/agent-accounts.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/dashboard.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/error.html" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/error.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/login.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/register.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/transactions.html" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/transactions.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/auditservice/controller/AuditController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/controller/AuditController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/auditservice/service/AuditService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/auditservice/service/AuditService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/auditservice/controller/AuditController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/example/auditservice/controller/AuditController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/org/example/auditservice/service/AuditService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/org/example/auditservice/service/AuditService.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/admin-audit.html" beforeDir="false" afterPath="$PROJECT_DIR$/../ui-service/src/main/resources/templates/admin-audit.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,26 +51,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RequestMappingsPanelOrder0": "0",
-    "RequestMappingsPanelOrder1": "1",
-    "RequestMappingsPanelWidth0": "75",
-    "RequestMappingsPanelWidth1": "75",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "Spring Boot.AuditServiceApplication.executor": "Run",
-    "git-widget-placeholder": "Merging ilham2",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Admin/E-Banking__3.0/transaction-service",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;Spring Boot.AuditServiceApplication.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;ilham2&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Admin/E-Banking__3.0/transaction-service&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="AuditServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="audit-service" />
@@ -109,6 +100,7 @@
       <workItem from="1767355304869" duration="30924000" />
       <workItem from="1767535988743" duration="12714000" />
       <workItem from="1767613085148" duration="6483000" />
+      <workItem from="1767656685065" duration="3159000" />
     </task>
     <servers />
   </component>

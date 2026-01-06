@@ -9,6 +9,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AuditService {
@@ -50,6 +52,11 @@ public class AuditService {
                 AuditSpecification.withFilters(userId, serviceName, status, eventType, from, to);
 
         return repository.findAll(spec, pageable);
+    }
+
+
+    public Optional<AuditLog> getById(UUID id) {
+        return repository.findById(id);
     }
 
 

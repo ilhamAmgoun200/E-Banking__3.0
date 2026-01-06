@@ -870,7 +870,7 @@
         try {
             // Dans un vrai projet, on appellerait une API pour récupérer les détails
             // Pour l'exemple, on simule des données
-            const response = await fetch(`http://localhost:8089/api/audit/test`);
+            const response = await fetch(`http://localhost:8089/api/audit/${logId}/metadata`);
             const log = await response.json();
 
             let metadata = log.metadata;

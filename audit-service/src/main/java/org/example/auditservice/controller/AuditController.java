@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 
 @RestController
@@ -115,6 +116,19 @@ public class AuditController {
 
         return stats;
     }
+
+
+    @GetMapping("/{id}/metadata")
+    public ResponseEntity<Map<String, Object>> getMetadata(@PathVariable UUID id) {
+        return service.getById(id)
+                .map(log -> {
+                    Map<String, Object> response = new HashMap<>();
+                    response.put("metadata", log.getMetadata()); // assuming AuditLog has getMetadata()
+                    return ResponseEntity.ok(response);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
 
     @PostMapping("/test")
     public AuditLog test(@RequestBody AuditLog log) {
